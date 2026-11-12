@@ -79,11 +79,53 @@ A biblioteca oficial usa um único índice para declarar fonte normativa por ass
 - Integridade de cópias arquivadas: arquivos foram movidos sem transformação; as versões oficiais foram geradas a partir desses conteúdos.
 - Markdown (arquivos oficiais, governança raiz e README do arquivo): 16 arquivos, 653 títulos, 74 tabelas; links, âncoras, hierarquia, cercas e espaçamento aprovados sem erros. Os snapshots históricos permanecem inalterados e foram excluídos da normalização.
 - Diagramas e blocos de código: cercas revisadas quanto a balanceamento; tags de escape removidas das versões oficiais.
-- OpenAPI: YAML 3.1.1 já havia passado pela validação sintática com PyYAML e por verificações direcionadas. A validação estrutural integral por ferramenta OpenAPI compatível continua pendente; nenhuma ferramenta está instalada e não houve instalação.
+- OpenAPI 3.1.1: validada com Redocly CLI `2.73.0`, versão executada por `npx` com cache temporário, sem instalação global. Comando: `npm_config_cache=/tmp/mybank-redocly-cache npm_config_offline=true npx --yes @redocly/cli@2.73.0 lint --format=json docs/05-api/openapi.yaml`. Resultado: 0 erros, 50 avisos e 0 ignorados; saída final: `Your API description is valid.`
+- Auditoria estrutural adicional: 106 path items e 116 operações; `operationId` únicos; parâmetros de rota obrigatórios presentes; respostas definidas; 585 referências locais resolvidas; nenhuma referência externa ou ciclo de schema detectado.
+- Avisos Redocly registrados sem supressão:
+  - `info-license-strict`: linha 23, `#/info/license`; licença sem URL ou identificador.
+  - `no-server-example.com`: linha 27, `#/servers/0/url`, e linha 29, `#/servers/1/url`; URLs de servidor apontam para localhost.
+  - `tag-description`: 14 ocorrências nas linhas 33–44 e 50–51, pointers `#/tags/0/description` até `#/tags/11/description`, além de `#/tags/13/description` e `#/tags/14/description`; tags sem descrição.
+  - `no-illogical-composition-keywords`: linha 3112, `#/components/schemas/AuthenticationResponse/properties/data/allOf`; `allOf` contém um único schema.
+  - `operation-4xx-response`: 30 operações não declaram resposta 4XX:
+    - linha 521: `#/paths/~1customers~1me~1accounts/get/responses`
+    - linha 534: `#/paths/~1customers~1me~1loans/get/responses`
+    - linha 547: `#/paths/~1customers~1me~1cards/get/responses`
+    - linha 560: `#/paths/~1customers~1me~1notifications/get/responses`
+    - linha 581: `#/paths/~1accounts/get/responses`
+    - linha 773: `#/paths/~1accounts~1{accountId}~1holders/get/responses`
+    - linha 788: `#/paths/~1accounts~1{accountId}~1invitations/get/responses`
+    - linha 951: `#/paths/~1accounts~1{accountId}~1transfers/get/responses`
+    - linha 1008: `#/paths/~1accounts~1{accountId}~1deposits/get/responses`
+    - linha 1065: `#/paths/~1accounts~1{accountId}~1withdrawals/get/responses`
+    - linha 1099: `#/paths/~1payment-providers/get/responses`
+    - linha 1181: `#/paths/~1accounts~1{accountId}~1payments/get/responses`
+    - linha 1222: `#/paths/~1loans/get/responses`
+    - linha 1275: `#/paths/~1loans~1{loanId}~1installments/get/responses`
+    - linha 1309: `#/paths/~1loans~1{loanId}~1installments~1{installmentId}~1payments/get/responses`
+    - linha 1392: `#/paths/~1cards/get/responses`
+    - linha 1524: `#/paths/~1cards~1{cardId}~1transactions/get/responses`
+    - linha 2002: `#/paths/~1admin~1accounts/get/responses`
+    - linha 2049: `#/paths/~1admin~1accounts~1{accountId}~1block/post/responses`
+    - linha 2075: `#/paths/~1admin~1accounts~1{accountId}~1unblock/post/responses`
+    - linha 2101: `#/paths/~1admin~1accounts~1{accountId}~1suspend/post/responses`
+    - linha 2146: `#/paths/~1admin~1administrators/get/responses`
+    - linha 2163: `#/paths/~1admin~1administrators~1invitations/get/responses`
+    - linha 2207: `#/paths/~1admin~1administrators~1invitations~1{invitationId}~1cancel/post/responses`
+    - linha 2272: `#/paths/~1admin~1settings/get/responses`
+    - linha 2339: `#/paths/~1notifications/get/responses`
+    - linha 2382: `#/paths/~1notifications~1read-all/post/responses`
+    - linha 2391: `#/paths/~1notifications~1preferences/get/responses`
+    - linha 2408: `#/paths/~1notifications~1preferences/patch/responses`
+    - linha 2500: `#/paths/~1privacy~1requests/get/responses`
+  - `no-unused-components`: linha 2911, `#/components/schemas/ResponseMeta` (schema não utilizado); linha 2566, `#/components/securitySchemes/reauthenticationToken` (security scheme sem uso em requisitos `security`; reautenticação segue documentada por parâmetro de cabeçalho nas operações aplicáveis).
+- Nenhum aviso foi automaticamente descartado.
+- Não foi executada segunda validação estrutural independente; não havia outra ferramenta compatível disponível, e nenhuma foi instalada.
+- Atualização posterior da revisão semântica: `GET /admin/loans` agora exige somente Bearer para autenticação, não exige reautenticação contextual e documenta auditoria; as 31 operações `/admin/**` têm requisitos explícitos de perfil ADMIN, 2FA e autorização do backend. Outbox documenta `PROCESSED`, `FAILED` e o significado operacional de `DEAD_LETTER`.
 
 ## 8. Pendências e aprovação
 
 - Receber os documentos originais aprovados do DER e do dicionário de dados. Não foram reconstruídos campos, tipos ou relações ausentes.
-- Executar validação estrutural completa da OpenAPI quando houver ferramenta compatível disponível ou autorização para instalá-la.
+- Analisar os 50 avisos do Redocly e decidir separadamente quais ajustes de qualidade devem ser aprovados.
+- A estrutura detalhada dos objetos do histórico de tentativas da Outbox continua pendente; as fontes aprovadas não especificam os campos, e o schema permaneceu genérico.
 - Concluir a verificação automatizada de links e âncoras após a organização.
 - Manter a Etapa 9 aguardando aprovação humana. A Etapa 10 e a implementação funcional não foram iniciadas.

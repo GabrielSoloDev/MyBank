@@ -1061,11 +1061,12 @@ Falhas deverão ser registradas, com tentativas limitadas, backoff progressivo e
 Todos os endpoints administrativos exigirão:
 
 - Perfil ADMIN.
-- Autenticação válida.
-- 2FA obrigatório.
-- Autorização no backend.
+- Usuário autenticado e sessão administrativa com 2FA concluído.
+- Autorização por perfil validada pelo backend em cada operação.
 - Reautenticação quando exigida pela criticidade.
 - Justificativa e auditoria nas ações críticas.
+
+O esquema Bearer representa autenticação e não substitui a autorização por perfil nem a exigência de 2FA. A consulta `GET /admin/loans` exige perfil ADMIN e sessão com 2FA concluído, deve ser registrada na auditoria e não exige reautenticação contextual.
 
 ## 14.1. Clientes
 
@@ -1396,6 +1397,8 @@ Regras:
 - Justificativa e auditoria no reprocessamento.
 - Preservação do histórico original.
 
+Estados documentados da Outbox: `PENDING` indica evento aguardando processamento; `PROCESSING`, execução em andamento; `PROCESSED`, processamento concluído com sucesso; `FAILED`, falha terminal que pode ser elegível a reprocessamento manual após validações e autorizações. `DEAD_LETTER` é somente mecanismo operacional de encaminhamento ou armazenamento e não constitui estado do domínio. O reprocessamento inicia novo ciclo sem apagar tentativas anteriores.
+
 O reprocessamento deverá iniciar um novo ciclo de execução sem apagar as tentativas anteriores.
 
 O payload dos eventos não deverá conter dados sensíveis desnecessários.
@@ -1551,4 +1554,6 @@ O comando é exclusivo de ADMIN e exige autenticação, 2FA, `X-Reauthentication
 
 A solicitação elegível retorna `202 Accepted`, com `eventId`, estado inicial `PENDING`, mensagem e `statusUrl` apontando para `/api/v1/admin/outbox-events/{eventId}`. O recurso de consulta é protegido para ADMIN e apresenta o estado e o histórico de tentativas conforme a política de acesso. A aceitação não apaga tentativas anteriores nem altera o conteúdo original do evento.
 
-Somente eventos elegíveis com estado `FAILED` podem ser reprocessados, após validação pelo backend. `DEAD_LETTER` designa o encaminhamento ou armazenamento operacional de eventos esgotados e não é estado alternativo nem critério autônomo de elegibilidade.
+`PROCESSED` representa processamento concluído com sucesso. Somente eventos elegíveis com estado `FAILED` podem ser reprocessados, após validação pelo backend. `DEAD_LETTER` designa o encaminhamento ou armazenamento operacional de eventos esgotados e não é estado alternativo nem critério autônomo de elegibilidade.
+
+O schema de `attempts` preserva o histórico em uma lista de objetos, mas a documentação aprovada não define os campos de cada tentativa; a estrutura detalhada permanece pendente de referência aprovada.

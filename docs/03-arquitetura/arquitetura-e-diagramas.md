@@ -475,6 +475,7 @@ sequenceDiagram
 - ADMIN precisa configurar TOTP antes de acessar o painel.
 - CUSTOMER utiliza TOTP opcionalmente.
 - Toda operação protegida deve validar autorização no backend.
+- Todas as operações sob `/admin/**` exigem perfil ADMIN e sessão autenticada com 2FA concluído. Bearer representa autenticação, não autorização por perfil; o backend valida o perfil em cada operação. `GET /admin/loans` também é auditado e não exige reautenticação contextual.
 
 ## 8. Arquitetura de eventos
 
@@ -494,10 +495,10 @@ flowchart TD
     F[Processador de eventos]
     G{Evento válido?}
     H[Executar consumidor]
-    I[Registrar sucesso]
+    I[Registrar PROCESSED]
     J[Registrar falha]
     K[Retry limitado]
-    L[Estado de falha final]
+    L[Estado terminal FAILED]
 
     A --> B
     B --> C
@@ -524,6 +525,7 @@ flowchart TD
 - Falhas deverão ser registradas.
 - Eventos não deverão gerar movimentações financeiras duplicadas.
 - A Outbox deverá permitir rastreabilidade e recuperação de eventos.
+- `PROCESSED` registra processamento concluído com sucesso. `FAILED` é falha terminal elegível a reprocessamento manual, após validações e autorizações. `DEAD_LETTER` é mecanismo operacional de encaminhamento ou armazenamento, não estado alternativo do domínio.
 
 Não será introduzido broker externo na primeira versão.
 
@@ -672,4 +674,4 @@ Esses detalhes deverão ser documentados sem contradizer as decisões já aprova
 
 O módulo responsável por dados de clientes deverá aplicar AES-256-GCM ao CPF armazenado e HMAC-SHA-256 independente para pesquisa e unicidade. As chaves permanecem fora do banco e do código-fonte; versões de chave e rotação devem preservar a capacidade de localizar e verificar registros existentes. Logs não podem conter CPF, ciphertext ou HMAC do CPF.
 
-A Outbox mantém o conteúdo original e o histórico das tentativas. `FAILED` é o estado terminal oficial e o único elegível a reprocessamento, sujeito às demais verificações. `DEAD_LETTER` é apenas o encaminhamento ou armazenamento operacional de eventos esgotados, sem constituir estado alternativo. O reprocessamento é uma operação administrativa rastreável, com autorização, 2FA, reautenticação, justificativa, confirmação, idempotência e controle de concorrência. O endpoint é `POST /api/v1/admin/outbox-events/{eventId}/reprocess`; a aceitação é assíncrona (`202 Accepted`) e devolve `statusUrl` para consulta.
+A Outbox mantém o conteúdo original e o histórico das tentativas. `PROCESSED` indica processamento concluído com sucesso. `FAILED` é o estado terminal de falha elegível a reprocessamento, sujeito às demais validações e autorizações. `DEAD_LETTER` é somente mecanismo operacional de encaminhamento ou armazenamento de eventos com falha, sem constituir estado alternativo. O reprocessamento é uma operação administrativa rastreável, com autorização, 2FA, reautenticação, justificativa, confirmação, idempotência e controle de concorrência. O endpoint é `POST /api/v1/admin/outbox-events/{eventId}/reprocess`; a aceitação é assíncrona (`202 Accepted`) e devolve `statusUrl` para consulta.

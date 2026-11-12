@@ -440,6 +440,8 @@ Administradores poderão criar, desativar e reativar outros administradores, res
 
 O administrador não poderá alterar saldos diretamente.
 
+Todas as operações sob `/admin/**` exigem usuário autenticado com perfil ADMIN, sessão administrativa com 2FA concluído e autorização validada pelo backend. O esquema Bearer documenta autenticação e não substitui a autorização por perfil. Consultas administrativas sensíveis são auditadas; `GET /admin/loans` deve gerar registro de auditoria e não exige reautenticação contextual. Reautenticação permanece reservada às ações críticas que a exigem.
+
 ### Consequências
 
 - Modelo de autorização simples.
@@ -715,4 +717,4 @@ O frontend não será autoridade sobre regras financeiras, autorização ou segu
 
 O documento [decisões técnicas complementares](decisoes-tecnicas-complementares.md), versão 1.1, é a fonte aprovada para CPF e sua proteção, snapshot contratual de empréstimos, estornos administrativos e reprocessamento da Outbox. Este registro serve à rastreabilidade e não altera o status geral deste catálogo. A harmonização posterior à revisão registra `FAILED` como estado terminal oficial da Outbox.
 
-As decisões devem ser refletidas nos documentos de requisitos, arquitetura, dados, contratos REST, OpenAPI e frontend. `FAILED` é o estado terminal oficial e elegível da Outbox; `DEAD_LETTER` identifica somente encaminhamento ou armazenamento operacional.
+As decisões devem ser refletidas nos documentos de requisitos, arquitetura, dados, contratos REST, OpenAPI e frontend. `PROCESSED` indica processamento concluído com sucesso; `FAILED` é o estado terminal oficial de falha e único elegível a reprocessamento manual, sujeito às validações e autorizações; `DEAD_LETTER` identifica somente mecanismo operacional de encaminhamento ou armazenamento, não um estado alternativo do domínio.

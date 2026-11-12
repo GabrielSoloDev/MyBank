@@ -717,6 +717,8 @@ Se um token antigo for reutilizado após rotação, o backend deve aplicar a pol
 - Refresh Token sofre rotação.
 - Sessões podem ser revogadas.
 - ADMIN não acessa o painel sem configurar 2FA.
+- Todas as operações sob `/admin/**` exigem perfil ADMIN, sessão autenticada com 2FA concluído e autorização do backend.
+- Consultas administrativas de dados sensíveis são auditadas; `GET /admin/loans` não exige reautenticação contextual.
 - Segredos e tokens não aparecem em logs.
 - Tentativas excessivas são limitadas.
 - A autorização é validada no backend em todos os endpoints protegidos.
@@ -741,6 +743,8 @@ A operação financeira não depende da entrega da notificação.
 6. Entrega é registrada por canal.
 7. Falhas podem gerar novas tentativas limitadas.
 8. Eventos definitivamente não processados são registrados para análise.
+
+`PROCESSED` indica conclusão bem-sucedida; `FAILED` é o estado terminal de falha elegível a reprocessamento manual após validações e autorizações. `DEAD_LETTER` é mecanismo operacional de encaminhamento ou armazenamento e não um estado alternativo do domínio.
 
 ## 10.3 Regras
 
@@ -891,3 +895,4 @@ Somente depois do fechamento dessas definições será adequado preparar o promp
 4. A solicitação e o ator são auditados; as tentativas anteriores e o payload original permanecem preservados.
 5. Uma solicitação aceita retorna `202 Accepted` e `statusUrl`; o frontend consulta o recurso até obter o estado de processamento disponível.
 6. O backend só aceita reprocessamento de evento elegível em `FAILED`. `DEAD_LETTER` é encaminhamento/armazenamento operacional e não um estado alternativo.
+7. O processamento concluído com sucesso é representado por `PROCESSED`; `FAILED` só pode ser reprocessado após todas as validações e autorizações.

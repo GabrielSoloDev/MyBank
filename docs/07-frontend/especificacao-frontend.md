@@ -731,6 +731,8 @@ O primeiro administrador será criado pelo processo de bootstrap.
 
 O frontend deverá respeitar a obrigatoriedade de 2FA para ADMIN e impedir o acesso ao painel antes da configuração inicial.
 
+Todas as chamadas sob `/admin/**` são destinadas a usuário autenticado com perfil ADMIN e sessão com 2FA concluído. A interface não substitui a autorização do backend. A consulta `GET /admin/loans` é registrada pelo backend na auditoria e não solicita reautenticação contextual.
+
 ## 8.8. Auditoria
 
 - Listagem de eventos.
@@ -764,7 +766,9 @@ A interface deverá tratar registros de auditoria como informações de consulta
 - Último erro.
 - Data da última tentativa.
 - Identificação do evento.
-- Estado terminal de falha.
+- Estados apresentados conforme a API: `PENDING`, `PROCESSING`, `PROCESSED` e `FAILED`.
+- `PROCESSED` indica sucesso; `FAILED` é falha terminal elegível a reprocessamento após confirmação de elegibilidade pelo backend.
+- `DEAD_LETTER` pode ser exibido como encaminhamento/armazenamento operacional, não como estado do domínio.
 - Reprocessamento manual autorizado.
 - Justificativa obrigatória.
 - Reautenticação e auditoria quando exigidas.
@@ -1216,4 +1220,4 @@ O frontend não solicita nem exibe CPF em áreas que não precisem dele e não a
 
 Na área administrativa da Outbox, a interface pode mostrar o estado, as tentativas e o erro operacional autorizado para consulta. O comando de reprocessamento exige justificativa, confirmação adicional e reautenticação segundo os contratos da API. Após `202 Accepted`, a interface acompanha o resultado pela `statusUrl` recebida, sem inferir sucesso final a partir da aceitação. O histórico de tentativas não pode ser apagado nem editado pelo frontend.
 
-A interface oferece o comando somente quando o backend indicar elegibilidade em estado `FAILED`. `DEAD_LETTER` pode identificar encaminhamento/armazenamento operacional, mas não é estado nem critério autônomo de elegibilidade.
+A interface oferece o comando somente quando o backend indicar elegibilidade em estado `FAILED`. `PROCESSED` indica processamento concluído com sucesso. `DEAD_LETTER` pode identificar encaminhamento/armazenamento operacional, mas não é estado nem critério autônomo de elegibilidade.

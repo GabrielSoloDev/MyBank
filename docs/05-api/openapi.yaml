@@ -43,6 +43,10 @@ tags:
   - name: Cards
   - name: Notifications
   - name: Administration
+    description: >-
+      Todas as operações sob /admin/** exigem usuário autenticado com perfil ADMIN,
+      sessão administrativa com 2FA concluído e autorização validada pelo backend.
+      Bearer representa autenticação e não substitui autorização por perfil.
   - name: Audit
   - name: Privacy
 
@@ -1581,9 +1585,13 @@ paths:
       tags: [Administration]
       operationId: adminListLoans
       summary: Listar solicitações de empréstimo
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend. A consulta deve ser registrada na auditoria e não
+        exige reautenticação contextual.
       security:
         - bearerAuth: []
-          reauthenticationToken: []
       parameters:
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/Size'
@@ -1602,6 +1610,10 @@ paths:
       tags: [Administration]
       operationId: reviewLoan
       summary: Iniciar análise de empréstimo
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/LoanId'
       requestBody:
@@ -1625,6 +1637,10 @@ paths:
       tags: [Administration]
       operationId: approveLoan
       summary: Aprovar empréstimo
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/LoanId'
         - $ref: '#/components/parameters/ReauthenticationToken'
@@ -1651,6 +1667,10 @@ paths:
       tags: [Administration]
       operationId: rejectLoan
       summary: Rejeitar empréstimo
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/LoanId'
         - $ref: '#/components/parameters/ReauthenticationToken'
@@ -1675,6 +1695,10 @@ paths:
       tags: [Administration]
       operationId: contractLoan
       summary: Formalizar contratação aprovada
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/LoanId'
         - $ref: '#/components/parameters/IdempotencyKey'
@@ -1698,6 +1722,9 @@ paths:
         justificativa, confirmação, idempotência e auditoria.
         Não permite estornar empréstimos, parcelas, estornos ou
         transações que não estejam COMPLETED.
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/TransactionId'
         - $ref: '#/components/parameters/IdempotencyKey'
@@ -1738,6 +1765,9 @@ paths:
         original e todas as tentativas anteriores. Somente eventos elegíveis em estado
         terminal FAILED podem ser reprocessados. DEAD_LETTER é encaminhamento ou
         armazenamento operacional, não um estado alternativo nem critério de elegibilidade.
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/EventId'
         - $ref: '#/components/parameters/IdempotencyKey'
@@ -1781,7 +1811,11 @@ paths:
       tags: [Administration]
       operationId: getOutboxEventStatus
       summary: Consultar estado e tentativas de evento da Outbox
-      description: Consulta administrativa para acompanhamento por `statusUrl`.
+      description: |
+        Consulta administrativa para acompanhamento por `statusUrl`.
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/EventId'
       responses:
@@ -1803,6 +1837,10 @@ paths:
       tags: [Administration]
       operationId: adminListCustomers
       summary: Listar clientes
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/Size'
@@ -1821,6 +1859,10 @@ paths:
       tags: [Administration]
       operationId: adminGetCustomer
       summary: Consultar cliente
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/CustomerId'
       responses:
@@ -1838,6 +1880,10 @@ paths:
       tags: [Administration]
       operationId: adminBlockCustomer
       summary: Bloquear cliente
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/CustomerId'
         - $ref: '#/components/parameters/ReauthenticationToken'
@@ -1862,6 +1908,10 @@ paths:
       tags: [Administration]
       operationId: adminUnblockCustomer
       summary: Desbloquear cliente
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/CustomerId'
         - $ref: '#/components/parameters/ReauthenticationToken'
@@ -1886,6 +1936,10 @@ paths:
       tags: [Administration]
       operationId: adminSuspendCustomer
       summary: Suspender cliente
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/CustomerId'
         - $ref: '#/components/parameters/ReauthenticationToken'
@@ -1910,6 +1964,10 @@ paths:
       tags: [Administration]
       operationId: adminCloseCustomer
       summary: Encerrar cliente
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/CustomerId'
         - $ref: '#/components/parameters/ReauthenticationToken'
@@ -1934,6 +1992,10 @@ paths:
       tags: [Administration]
       operationId: adminListAccounts
       summary: Listar contas
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/Size'
@@ -1950,6 +2012,10 @@ paths:
       tags: [Administration]
       operationId: adminGetAccount
       summary: Consultar conta
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/AccountId'
       responses:
@@ -1967,6 +2033,10 @@ paths:
       tags: [Administration]
       operationId: adminBlockAccount
       summary: Bloquear conta administrativamente
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/AccountId'
         - $ref: '#/components/parameters/ReauthenticationToken'
@@ -1989,6 +2059,10 @@ paths:
       tags: [Administration]
       operationId: adminUnblockAccount
       summary: Desbloquear conta administrativamente
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/AccountId'
         - $ref: '#/components/parameters/ReauthenticationToken'
@@ -2011,6 +2085,10 @@ paths:
       tags: [Administration]
       operationId: adminSuspendAccount
       summary: Suspender conta administrativamente
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/AccountId'
         - $ref: '#/components/parameters/ReauthenticationToken'
@@ -2033,6 +2111,10 @@ paths:
       tags: [Administration]
       operationId: adminCloseAccount
       summary: Encerrar conta administrativamente
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/AccountId'
         - $ref: '#/components/parameters/ReauthenticationToken'
@@ -2057,6 +2139,10 @@ paths:
       tags: [Administration]
       operationId: listAdministrators
       summary: Listar administradores
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       responses:
         '200':
           description: Administradores.
@@ -2070,6 +2156,10 @@ paths:
       tags: [Administration]
       operationId: listAdministratorInvitations
       summary: Listar convites administrativos
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       responses:
         '200':
           description: Convites.
@@ -2081,6 +2171,10 @@ paths:
       tags: [Administration]
       operationId: inviteAdministrator
       summary: Convidar administrador
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/ReauthenticationToken'
       requestBody:
@@ -2104,6 +2198,10 @@ paths:
       tags: [Administration]
       operationId: cancelAdministratorInvitation
       summary: Cancelar convite administrativo
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/InvitationId'
       responses:
@@ -2119,6 +2217,10 @@ paths:
       tags: [Administration]
       operationId: blockAdministrator
       summary: Bloquear administrador
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/UserId'
         - $ref: '#/components/parameters/ReauthenticationToken'
@@ -2139,6 +2241,10 @@ paths:
       tags: [Administration]
       operationId: unblockAdministrator
       summary: Reativar administrador
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/UserId'
         - $ref: '#/components/parameters/ReauthenticationToken'
@@ -2159,6 +2265,10 @@ paths:
       tags: [Administration]
       operationId: listSystemSettings
       summary: Consultar configurações administrativas
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       responses:
         '200':
           description: Configurações visíveis ao administrador.
@@ -2172,6 +2282,10 @@ paths:
       tags: [Administration]
       operationId: getSystemSetting
       summary: Consultar configuração
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/SettingKey'
       responses:
@@ -2187,6 +2301,10 @@ paths:
       tags: [Administration]
       operationId: updateSystemSetting
       summary: Alterar configuração
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/SettingKey'
         - $ref: '#/components/parameters/ReauthenticationToken'
@@ -2304,6 +2422,10 @@ paths:
       tags: [Audit]
       operationId: listAuditEvents
       summary: Consultar eventos de auditoria
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - name: actorId
           in: query
@@ -2350,6 +2472,10 @@ paths:
       tags: [Audit]
       operationId: getAuditEvent
       summary: Consultar evento de auditoria
+      description: |
+        Requer usuário autenticado com perfil ADMIN e sessão administrativa com 2FA concluído.
+        O esquema Bearer representa autenticação e não substitui a autorização por perfil,
+        que é validada pelo backend.
       parameters:
         - $ref: '#/components/parameters/EventId'
       responses:
@@ -4010,8 +4136,12 @@ components:
 
     OutboxEventStatus:
       type: string
-      enum: [PENDING, PROCESSING, FAILED, PROCESSED]
-      description: FAILED é o estado terminal oficial de falha. DEAD_LETTER é encaminhamento/armazenamento operacional, não estado.
+      enum: [PENDING, PROCESSING, PROCESSED, FAILED]
+      description: >-
+        PROCESSED indica processamento concluído com sucesso. FAILED é o estado
+        terminal de falha elegível a reprocessamento manual após validações e
+        autorizações. DEAD_LETTER é mecanismo operacional de encaminhamento ou
+        armazenamento de eventos com falha, não um estado alternativo do domínio.
 
     OutboxEvent:
       type: object
@@ -4023,7 +4153,10 @@ components:
           $ref: '#/components/schemas/OutboxEventStatus'
         attempts:
           type: array
-          description: Histórico preservado das tentativas de processamento.
+          description: >-
+            Histórico preservado das tentativas de processamento. A documentação
+            aprovada não define os campos de cada tentativa; por isso os itens
+            permanecem como objetos genéricos.
           items:
             type: object
             additionalProperties: true

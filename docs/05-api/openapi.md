@@ -5,7 +5,7 @@
 | Identificador | MB-API-OPENAPI |
 | Estado editorial | Oficial como índice da especificação; conteúdo contratual no YAML. |
 | Versão OpenAPI | 3.1.1 |
-| Versão da API | 1.1 |
+| Versão da API | 1.1.0 |
 | Fonte normativa | [openapi.yaml](openapi.yaml) |
 | Fonte Markdown anterior | [original arquivado](../99-fontes-originais/MyBank%20%E2%80%94%20Especifica%C3%A7%C3%A3o%20OpenAPI%203.1.1.md) |
 
@@ -25,4 +25,4 @@ A especificação Markdown anterior, incluindo seu bloco YAML incorporado, foi p
 
 ## Validação
 
-A sintaxe YAML e as verificações direcionadas são registradas em [relatório de consolidação](../09-auditoria/relatorio-de-consolidacao.md). A validação integral por ferramenta compatível permanece pendente enquanto nenhuma ferramenta adequada estiver disponível no ambiente.
+A validação estrutural com Redocly CLI 2.73.0, seus avisos e limitações estão registrados no [relatório de consolidação](../09-auditoria/relatorio-de-consolidacao.md). O arquivo-fonte normativo permanece [`openapi.yaml`](openapi.yaml); esta página é somente índice documental.

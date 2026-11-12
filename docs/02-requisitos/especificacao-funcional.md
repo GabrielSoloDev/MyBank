@@ -519,6 +519,8 @@ O administrador deverá possuir acesso a:
 
 Poderá consultar, bloquear, suspender, reativar ou encerrar recursos quando as regras permitirem.
 
+Todas as operações sob `/admin/**` exigem usuário autenticado com perfil ADMIN, sessão administrativa com 2FA concluído e autorização validada pelo backend. O esquema Bearer representa autenticação e não substitui a autorização por perfil. A consulta de solicitações de empréstimo por `GET /admin/loans` deve ser registrada na auditoria e não exige reautenticação contextual.
+
 Não poderá alterar diretamente saldos.
 
 Correções financeiras deverão ocorrer por estorno ou compensação.
@@ -1083,3 +1085,4 @@ Conforme a consolidação técnica complementar v1.1:
 - Estornos administrativos são integrais, exclusivos de ADMIN, com 2FA, reautenticação, justificativa, confirmação, auditoria, idempotência e limites configuráveis. A correção ocorre por lançamentos compensatórios; lançamentos originais do Ledger não são alterados.
 - Reprocessamentos administrativos da Outbox preservam o histórico de tentativas, não modificam o payload original, e são idempotentes, auditados e protegidos contra concorrência.
 - `FAILED` é o estado terminal oficial e único elegível para reprocessamento, após validação dos demais critérios. `DEAD_LETTER` descreve somente o encaminhamento ou armazenamento operacional de eventos esgotados, não um estado alternativo.
+- `PROCESSED` representa o processamento concluído com sucesso na Outbox; `FAILED` representa falha terminal elegível a reprocessamento, condicionado às demais validações e autorizações. `DEAD_LETTER` permanece mecanismo operacional, não estado do domínio.

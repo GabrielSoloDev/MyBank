@@ -253,6 +253,15 @@ As atualizações deverão preservar as decisões anteriormente aprovadas.
 
 ## 7. Auditoria técnica final
 
+### Complemento aprovado após revisão semântica do OpenAPI
+
+- `PROCESSED` representa processamento concluído com sucesso na Outbox.
+- `FAILED` é o estado terminal de falha elegível a reprocessamento manual, condicionado às validações e autorizações aprovadas.
+- `DEAD_LETTER` é mecanismo operacional de encaminhamento ou armazenamento de eventos com falha, não um estado alternativo do domínio.
+- Todas as operações sob `/admin/**` exigem usuário autenticado com perfil ADMIN, sessão administrativa com 2FA concluído e autorização validada pelo backend. Bearer representa autenticação e não substitui autorização por perfil.
+- `GET /admin/loans` exige ADMIN e 2FA, gera registro de auditoria e não exige reautenticação contextual.
+- A estrutura de campos dos itens do histórico `attempts` não está definida nos documentos aprovados; permanece genérica até existir referência aprovada.
+
 Antes do encerramento da consolidação documental, deverão ser realizadas as seguintes verificações:
 
 1. Conferir a representação persistida do CPF criptografado e seus metadados.
