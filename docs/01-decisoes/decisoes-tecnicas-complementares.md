@@ -1,10 +1,27 @@
 # MyBank — Consolidação das Decisões Técnicas Complementares
 
-**Versão:** 1.1  
-**Status:** Consolidado — decisões aprovadas  
-**Finalidade:** Reunir decisões técnicas complementares e estabelecer orientações para atualização e auditoria dos documentos do projeto.
+| Campo | Valor |
+| --- | --- |
+| Identificador | MB-DEC-001 |
+| Classe | Documento oficial da biblioteca MyBank |
+| Original preservado | [MyBank — Consolidação das Decisões Técnicas Complementares.md](../99-fontes-originais/MyBank%20—%20Consolidação%20das%20Decisões%20Técnicas%20Complementares.md) |
+| Versão | 1.1 |
+| Status | Consolidado — decisões aprovadas |
+| Finalidade | Reunir decisões técnicas complementares e estabelecer orientações para atualização e auditoria dos documentos do projeto. |
 
 ---
+
+## Sumário
+
+- [1. Identificação dos clientes](#1-identificacao-dos-clientes)
+- [2. Proteção do CPF](#2-protecao-do-cpf)
+- [3. Snapshot contratual dos empréstimos](#3-snapshot-contratual-dos-emprestimos)
+- [4. Estornos administrativos](#4-estornos-administrativos)
+- [5. Reprocessamento da Outbox](#5-reprocessamento-da-outbox)
+- [6. Atualizações documentais obrigatórias](#6-atualizacoes-documentais-obrigatorias)
+- [7. Auditoria técnica final](#7-auditoria-tecnica-final)
+- [8. Restrições permanentes](#8-restricoes-permanentes)
+- [9. Critério de conclusão](#9-criterio-de-conclusao)
 
 ## 1. Identificação dos clientes
 
@@ -169,8 +186,10 @@ O reprocessamento deverá impedir execuções concorrentes incompatíveis e mant
 
 ```json
 {
-  "reason": "Justificativa obrigatória para o reprocessamento"
+  "reason": "Justificativa obrigatória para o reprocessamento",
+  "confirmation": true
 }
+
 ```
 
 **Resposta:**
@@ -190,11 +209,14 @@ Exemplo:
   "message": "Reprocessamento solicitado.",
   "statusUrl": "/api/v1/admin/outbox-events/UUID"
 }
+
 ```
 
 A URL de acompanhamento deverá utilizar o contrato administrativo de consulta de eventos da Outbox.
 
 ### 5.4. Autorização
+
+O campo `confirmation` deverá ser `true` como confirmação explícita da operação. O corpo exige `reason` e `confirmation`.
 
 O endpoint deverá validar:
 
@@ -215,7 +237,7 @@ Toda solicitação deverá gerar registro de auditoria.
 As decisões deverão ser incorporadas e conferidas nos seguintes documentos:
 
 | Documento | Atualização necessária |
-|---|---|
+| --- | --- |
 | `AGENTS.md` | Regras permanentes de segurança, arquitetura e desenvolvimento |
 | `ROADMAP.md` | Estado das etapas documentais e pendências |
 | ADRs | Proteção de dados e decisões técnicas complementares |

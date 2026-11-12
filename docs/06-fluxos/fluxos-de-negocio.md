@@ -1,11 +1,90 @@
 # MyBank — Fluxos Detalhados de Negócio
 
-**Etapa:** Fluxos de negócio e diagramas de sequência  
-**Versão:** 1.0 — Proposta para revisão  
-**Status:** Aguardando aprovação  
-**Base:** Contratos REST `/api/v1` aprovados
+| Campo | Valor |
+| --- | --- |
+| Identificador | MB-FLOW-001 |
+| Classe | Documento oficial da biblioteca MyBank |
+| Original preservado | [MyBank — Fluxos Detalhados de Negocio.md](../99-fontes-originais/MyBank%20—%20Fluxos%20Detalhados%20de%20Negocio.md) |
+| Etapa | Fluxos de negócio e diagramas de sequência |
+| Versão | 1.0 — Proposta para revisão |
+| Status | Aguardando aprovação |
+| Base | Contratos REST `/api/v1` aprovados |
 
 ---
+
+## Sumário
+
+- [1. Objetivo](#1-objetivo)
+- [2. Princípios gerais dos fluxos](#2-principios-gerais-dos-fluxos)
+- [3. Transferências internas](#3-transferencias-internas)
+- [3.1 Objetivo](#31-objetivo)
+- [3.2 Participantes](#32-participantes)
+- [3.3 Pré-condições](#33-pre-condicoes)
+- [3.4 Fluxo principal](#34-fluxo-principal)
+- [3.5 Tratamento de falhas](#35-tratamento-de-falhas)
+- [3.6 Diagrama de sequência](#36-diagrama-de-sequencia)
+- [3.7 Critérios de aceite](#37-criterios-de-aceite)
+- [4. Depósitos e saques simulados](#4-depositos-e-saques-simulados)
+- [4.1 Objetivo](#41-objetivo)
+- [4.2 Depósito](#42-deposito)
+- [4.3 Saque](#43-saque)
+- [4.4 Regras específicas](#44-regras-especificas)
+- [4.5 Critérios de aceite](#45-criterios-de-aceite)
+- [5. Pagamentos de serviços fictícios](#5-pagamentos-de-servicos-ficticios)
+- [5.1 Objetivo](#51-objetivo)
+- [5.2 Participantes](#52-participantes)
+- [5.3 Fluxo principal](#53-fluxo-principal)
+- [5.4 Agendamento](#54-agendamento)
+- [5.5 Máquina de estados](#55-maquina-de-estados)
+- [5.6 Falhas](#56-falhas)
+- [5.7 Critérios de aceite](#57-criterios-de-aceite)
+- [6. Empréstimos](#6-emprestimos)
+- [6.1 Objetivo](#61-objetivo)
+- [6.2 Participantes](#62-participantes)
+- [6.3 Simulação](#63-simulacao)
+- [6.4 Solicitação](#64-solicitacao)
+- [6.5 Análise e aprovação](#65-analise-e-aprovacao)
+- [6.6 Contratação](#66-contratacao)
+- [6.7 Parcelas](#67-parcelas)
+- [6.8 Quitação](#68-quitacao)
+- [6.9 Critérios de aceite](#69-criterios-de-aceite)
+- [7. Cartões virtuais](#7-cartoes-virtuais)
+- [7.1 Objetivo](#71-objetivo)
+- [7.2 Criação](#72-criacao)
+- [7.3 Compra simulada](#73-compra-simulada)
+- [7.4 Estorno](#74-estorno)
+- [7.5 Estados](#75-estados)
+- [7.6 Critérios de aceite](#76-criterios-de-aceite)
+- [8. Contas conjuntas e encerramento](#8-contas-conjuntas-e-encerramento)
+- [8.1 Objetivo](#81-objetivo)
+- [8.2 Convite de titular](#82-convite-de-titular)
+- [8.3 Saída voluntária](#83-saida-voluntaria)
+- [8.4 Encerramento da conta](#84-encerramento-da-conta)
+- [8.5 Participações percentuais](#85-participacoes-percentuais)
+- [8.6 Critérios de aceite](#86-criterios-de-aceite)
+- [9. Autenticação, sessões e segurança](#9-autenticacao-sessoes-e-seguranca)
+- [9.1 Login](#91-login)
+- [9.2 Tokens](#92-tokens)
+- [9.3 Renovação de sessão](#93-renovacao-de-sessao)
+- [9.4 Logout](#94-logout)
+- [9.5 2FA TOTP](#95-2fa-totp)
+- [9.6 Desafio demonstrativo em desenvolvimento](#96-desafio-demonstrativo-em-desenvolvimento)
+- [9.7 Critérios de aceite](#97-criterios-de-aceite)
+- [10. Notificações e Outbox](#10-notificacoes-e-outbox)
+- [10.1 Princípio](#101-principio)
+- [10.2 Fluxo](#102-fluxo)
+- [10.3 Regras](#103-regras)
+- [11. Auditoria e rastreabilidade](#11-auditoria-e-rastreabilidade)
+- [12. Regras transversais](#12-regras-transversais)
+- [13. Testes obrigatórios](#13-testes-obrigatorios)
+- [13.1 Testes unitários](#131-testes-unitarios)
+- [13.2 Testes de integração](#132-testes-de-integracao)
+- [13.3 Testes de concorrência](#133-testes-de-concorrencia)
+- [13.4 Testes de segurança](#134-testes-de-seguranca)
+- [14. Decisões que ainda precisam de definição](#14-decisoes-que-ainda-precisam-de-definicao)
+- [15. Critérios gerais de aceite da etapa](#15-criterios-gerais-de-aceite-da-etapa)
+- [16. Próxima etapa sugerida](#16-proxima-etapa-sugerida)
+- [14. Decisões complementares aprovadas](#14-decisoes-complementares-aprovadas)
 
 ## 1. Objetivo
 
@@ -66,7 +145,7 @@ Operações financeiras que possam ser repetidas pelo cliente devem aceitar uma 
 
 ---
 
-# 3. Transferências internas
+## 3. Transferências internas
 
 ## 3.1 Objetivo
 
@@ -117,7 +196,7 @@ Permitir transferências entre contas MyBank, sem integração com instituiçõe
 ## 3.5 Tratamento de falhas
 
 | Situação | Comportamento |
-|---|---|
+| --- | --- |
 | Saldo insuficiente | Rejeitar operação sem contabilização |
 | Conta de origem bloqueada | Rejeitar operação |
 | Conta de destino encerrada | Rejeitar operação |
@@ -152,6 +231,7 @@ sequenceDiagram
     Transaction->>Outbox: Registrar evento
     Transaction-->>API: Transferência concluída
     API-->>Cliente: Confirmação e comprovante
+
 ```
 
 ## 3.7 Critérios de aceite
@@ -166,7 +246,7 @@ sequenceDiagram
 
 ---
 
-# 4. Depósitos e saques simulados
+## 4. Depósitos e saques simulados
 
 ## 4.1 Objetivo
 
@@ -227,7 +307,7 @@ Simular entradas e retiradas de dinheiro utilizando contas contábeis de compens
 
 ---
 
-# 5. Pagamentos de serviços fictícios
+## 5. Pagamentos de serviços fictícios
 
 ## 5.1 Objetivo
 
@@ -286,6 +366,7 @@ stateDiagram-v2
     PROCESSING --> COMPLETED
     PROCESSING --> FAILED
     PROCESSING --> REJECTED
+
 ```
 
 ## 5.6 Falhas
@@ -307,7 +388,7 @@ stateDiagram-v2
 
 ---
 
-# 6. Empréstimos
+## 6. Empréstimos
 
 ## 6.1 Objetivo
 
@@ -417,7 +498,7 @@ O pagamento de uma parcela deve registrar os lançamentos contábeis corresponde
 
 ---
 
-# 7. Cartões virtuais
+## 7. Cartões virtuais
 
 ## 7.1 Objetivo
 
@@ -483,7 +564,7 @@ Um cartão bloqueado pode ser reativado. Um cartão cancelado não pode ser reat
 
 ---
 
-# 8. Contas conjuntas e encerramento
+## 8. Contas conjuntas e encerramento
 
 ## 8.1 Objetivo
 
@@ -549,7 +630,7 @@ Empréstimos são obrigações pessoais e continuam existindo após o encerramen
 
 ---
 
-# 9. Autenticação, sessões e segurança
+## 9. Autenticação, sessões e segurança
 
 ## 9.1 Login
 
@@ -642,7 +723,7 @@ Se um token antigo for reutilizado após rotação, o backend deve aplicar a pol
 
 ---
 
-# 10. Notificações e Outbox
+## 10. Notificações e Outbox
 
 ## 10.1 Princípio
 
@@ -673,7 +754,7 @@ A operação financeira não depende da entrega da notificação.
 
 ---
 
-# 11. Auditoria e rastreabilidade
+## 11. Auditoria e rastreabilidade
 
 Devem gerar registros de auditoria, conforme aplicabilidade:
 
@@ -705,10 +786,10 @@ Logs técnicos e auditoria de negócio devem permanecer separados.
 
 ---
 
-# 12. Regras transversais
+## 12. Regras transversais
 
 | Regra | Aplicação |
-|---|---|
+| --- | --- |
 | Idempotência | Operações financeiras e comandos que possam ser repetidos |
 | ACID | Operações que alteram Ledger ou estado financeiro |
 | Partidas dobradas | Todos os movimentos contábeis |
@@ -720,7 +801,7 @@ Logs técnicos e auditoria de negócio devem permanecer separados.
 | Histórico | Preservação das transições de estado |
 | LGPD | Retenção, anonimização e atendimento de solicitações |
 
-# 13. Testes obrigatórios
+## 13. Testes obrigatórios
 
 ## 13.1 Testes unitários
 
@@ -766,7 +847,7 @@ Logs técnicos e auditoria de negócio devem permanecer separados.
 - Consultas sensíveis sem autorização.
 - CSRF e XSS.
 
-# 14. Decisões que ainda precisam de definição
+## 14. Decisões que ainda precisam de definição
 
 Os fluxos respeitam as decisões já aprovadas. Entretanto, alguns parâmetros operacionais ainda precisam ser definidos antes da implementação:
 
@@ -781,7 +862,7 @@ Os fluxos respeitam as decisões já aprovadas. Entretanto, alguns parâmetros o
 
 Esses parâmetros não devem ser inventados durante a implementação. Devem ser definidos e documentados antes da etapa correspondente.
 
-# 15. Critérios gerais de aceite da etapa
+## 15. Critérios gerais de aceite da etapa
 
 - Todos os sete fluxos principais estão documentados.
 - Cada fluxo possui pré-condições, sequência e pós-condições.
@@ -794,7 +875,7 @@ Esses parâmetros não devem ser inventados durante a implementação. Devem ser
 - Testes necessários estão identificados.
 - Pendências estão explicitadas, sem decisões arbitrárias.
 
-# 16. Próxima etapa sugerida
+## 16. Próxima etapa sugerida
 
 Após a aprovação dos fluxos, a próxima etapa será revisar os parâmetros operacionais pendentes e consolidar as decisões em ADRs e documentação técnica.
 
@@ -802,11 +883,11 @@ Somente depois do fechamento dessas definições será adequado preparar o promp
 
 **Status final:** proposta apresentada para revisão. Nenhuma implementação autorizada nesta etapa.
 
-# Complemento aprovado — reprocessamento administrativo da Outbox
+## 14. Decisões complementares aprovadas
 
 1. ADMIN autenticado com 2FA solicita reautenticação vinculada a `OUTBOX_EVENT_REPROCESSING`.
 2. A interface envia o identificador do evento, a justificativa, a confirmação adicional e a chave de idempotência ao endpoint documentado.
 3. O backend verifica autorização, reautenticação, justificativa, confirmação, estado elegível, ausência de execução incompatível e idempotência.
 4. A solicitação e o ator são auditados; as tentativas anteriores e o payload original permanecem preservados.
 5. Uma solicitação aceita retorna `202 Accepted` e `statusUrl`; o frontend consulta o recurso até obter o estado de processamento disponível.
-6. A política de estado terminal permanece pendente de harmonização entre `FAILED` e `DEAD_LETTER`.
+6. O backend só aceita reprocessamento de evento elegível em `FAILED`. `DEAD_LETTER` é encaminhamento/armazenamento operacional e não um estado alternativo.

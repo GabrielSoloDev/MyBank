@@ -705,6 +705,6 @@ O frontend não será autoridade sobre regras financeiras, autorização ou segu
 
 ## Registro complementar — decisões aprovadas na consolidação técnica v1.1
 
-O documento [MyBank — Consolidação das Decisões Técnicas Complementares](MyBank%20%E2%80%94%20Consolida%C3%A7%C3%A3o%20das%20Decis%C3%B5es%20T%C3%A9cnicas%20Complementares.md), versão 1.1, é a fonte aprovada para CPF e sua proteção, snapshot contratual de empréstimos, estornos administrativos e reprocessamento da Outbox. Este registro serve à rastreabilidade e não altera o status geral deste catálogo nem resolve divergências ainda pendentes.
+O documento [MyBank — Consolidação das Decisões Técnicas Complementares](MyBank%20%E2%80%94%20Consolida%C3%A7%C3%A3o%20das%20Decis%C3%B5es%20T%C3%A9cnicas%20Complementares.md), versão 1.1, é a fonte aprovada para CPF e sua proteção, snapshot contratual de empréstimos, estornos administrativos e reprocessamento da Outbox. Este registro serve à rastreabilidade e não altera o status geral deste catálogo. A harmonização posterior à revisão registra `FAILED` como estado terminal oficial da Outbox.
 
-As decisões devem ser refletidas nos documentos de requisitos, arquitetura, dados, contratos REST, OpenAPI e frontend. A divergência entre `FAILED` e `DEAD_LETTER` para o estado terminal da Outbox permanece pendente de decisão.
+As decisões devem ser refletidas nos documentos de requisitos, arquitetura, dados, contratos REST, OpenAPI e frontend. `FAILED` é o estado terminal oficial e elegível da Outbox; `DEAD_LETTER` identifica somente encaminhamento ou armazenamento operacional.

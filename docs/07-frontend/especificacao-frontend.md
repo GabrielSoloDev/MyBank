@@ -1,14 +1,107 @@
 # MyBank — Especificação Frontend
 
-**Projeto:** MyBank  
-**Documento:** Especificação Técnica do Frontend  
-**Versão:** 1.0 — Reconstruída a partir das decisões aprovadas  
-**Status:** Referência para desenvolvimento  
-**Slogan:** Seu dinheiro. Suas possibilidades.
+| Campo | Valor |
+| --- | --- |
+| Identificador | MB-FE-001 |
+| Classe | Documento oficial da biblioteca MyBank |
+| Original preservado | [MyBank — Especificação Frontend.md](../99-fontes-originais/MyBank%20—%20Especificação%20Frontend.md) |
+| Projeto | MyBank |
+| Documento | Especificação Técnica do Frontend |
+| Versão | 1.0 — Reconstruída a partir das decisões aprovadas |
+| Status | Referência para desenvolvimento |
+| Slogan | Seu dinheiro. Suas possibilidades. |
 
 ---
 
-# 1. Objetivo
+## Sumário
+
+- [1. Objetivo](#1-objetivo)
+- [2. Tecnologias e ferramentas](#2-tecnologias-e-ferramentas)
+- [2.1. Stack principal](#21-stack-principal)
+- [2.2. Testes](#22-testes)
+- [2.3. Gerenciamento de dependências](#23-gerenciamento-de-dependencias)
+- [3. Arquitetura do frontend](#3-arquitetura-do-frontend)
+- [3.1. Organização arquitetural](#31-organizacao-arquitetural)
+- [3.2. Separação por áreas](#32-separacao-por-areas)
+- [3.3. Estrutura sugerida](#33-estrutura-sugerida)
+- [4. Identidade visual e design system](#4-identidade-visual-e-design-system)
+- [4.1. Conceito visual](#41-conceito-visual)
+- [4.2. Paleta de cores](#42-paleta-de-cores)
+- [4.3. Elementos visuais](#43-elementos-visuais)
+- [4.4. Tipografia](#44-tipografia)
+- [4.5. Componentes do design system](#45-componentes-do-design-system)
+- [5. Navegação e rotas](#5-navegacao-e-rotas)
+- [5.1. Área pública](#51-area-publica)
+- [5.2. Área do cliente](#52-area-do-cliente)
+- [5.3. Área administrativa](#53-area-administrativa)
+- [5.4. Controle de navegação](#54-controle-de-navegacao)
+- [6. Área pública](#6-area-publica)
+- [6.1. Página inicial](#61-pagina-inicial)
+- [6.2. Login](#62-login)
+- [6.3. Cadastro](#63-cadastro)
+- [6.4. Recuperação de senha](#64-recuperacao-de-senha)
+- [7. Área do cliente](#7-area-do-cliente)
+- [7.1. Dashboard](#71-dashboard)
+- [7.2. Perfil do cliente](#72-perfil-do-cliente)
+- [7.3. Contas bancárias](#73-contas-bancarias)
+- [7.4. Contas conjuntas](#74-contas-conjuntas)
+- [7.5. Extrato](#75-extrato)
+- [7.6. Transferências](#76-transferencias)
+- [7.7. Depósitos](#77-depositos)
+- [7.8. Saques](#78-saques)
+- [7.9. Pagamentos](#79-pagamentos)
+- [7.10. Empréstimos](#710-emprestimos)
+- [7.11. Cartões virtuais](#711-cartoes-virtuais)
+- [7.12. Notificações](#712-notificacoes)
+- [7.13. Segurança e sessões](#713-seguranca-e-sessoes)
+- [8. Área administrativa](#8-area-administrativa)
+- [8.1. Dashboard administrativo](#81-dashboard-administrativo)
+- [8.2. Gestão de clientes](#82-gestao-de-clientes)
+- [8.3. Gestão de contas](#83-gestao-de-contas)
+- [8.4. Gestão de transações](#84-gestao-de-transacoes)
+- [8.5. Estornos administrativos](#85-estornos-administrativos)
+- [8.6. Gestão de empréstimos](#86-gestao-de-emprestimos)
+- [8.7. Gestão de administradores](#87-gestao-de-administradores)
+- [8.8. Auditoria](#88-auditoria)
+- [8.9. Configurações do sistema](#89-configuracoes-do-sistema)
+- [8.10. Outbox e eventos](#810-outbox-e-eventos)
+- [8.11. Privacidade](#811-privacidade)
+- [9. Autenticação e segurança](#9-autenticacao-e-seguranca)
+- [9.1. Integração com autenticação](#91-integracao-com-autenticacao)
+- [9.2. Armazenamento de tokens](#92-armazenamento-de-tokens)
+- [9.3. Renovação de sessão](#93-renovacao-de-sessao)
+- [9.4. Login com 2FA](#94-login-com-2fa)
+- [9.5. Administradores](#95-administradores)
+- [9.6. Autorização](#96-autorizacao)
+- [9.7. Proteções adicionais](#97-protecoes-adicionais)
+- [10. Integração com a API REST](#10-integracao-com-a-api-rest)
+- [10.1. Comunicação](#101-comunicacao)
+- [10.2. Camada de serviços](#102-camada-de-servicos)
+- [10.3. Gerenciamento de estado remoto](#103-gerenciamento-de-estado-remoto)
+- [10.4. Estado local](#104-estado-local)
+- [10.5. Erros](#105-erros)
+- [10.6. Idempotência](#106-idempotencia)
+- [11. Formulários e validação](#11-formularios-e-validacao)
+- [11.1. Bibliotecas](#111-bibliotecas)
+- [11.2. Padrões](#112-padroes)
+- [11.3. Valores financeiros](#113-valores-financeiros)
+- [12. Responsividade](#12-responsividade)
+- [13. Acessibilidade](#13-acessibilidade)
+- [14. Desempenho e experiência do usuário](#14-desempenho-e-experiencia-do-usuario)
+- [15. Estados e feedback visual](#15-estados-e-feedback-visual)
+- [16. Testes e qualidade](#16-testes-e-qualidade)
+- [16.1. Vitest](#161-vitest)
+- [16.2. React Testing Library](#162-react-testing-library)
+- [16.3. Playwright](#163-playwright)
+- [16.4. Segurança frontend](#164-seguranca-frontend)
+- [17. Variáveis de ambiente](#17-variaveis-de-ambiente)
+- [18. Padrões de desenvolvimento](#18-padroes-de-desenvolvimento)
+- [19. Limites de responsabilidade](#19-limites-de-responsabilidade)
+- [20. Critérios de aceite](#20-criterios-de-aceite)
+- [21. Diretriz final](#21-diretriz-final)
+- [22. Decisões complementares aprovadas — CPF e Outbox](#22-decisoes-complementares-aprovadas-cpf-e-outbox)
+
+## 1. Objetivo
 
 Definir os requisitos funcionais, técnicos, visuais e arquiteturais do frontend do MyBank, estabelecendo padrões para desenvolvimento de uma interface moderna, responsiva, acessível, segura e integrada ao backend.
 
@@ -16,7 +109,7 @@ O frontend será responsável pela apresentação das informações, interação
 
 O frontend não será responsável por regras financeiras, decisões de autorização ou validações de segurança definitivas. Essas responsabilidades pertencem ao backend.
 
-# 2. Tecnologias e ferramentas
+## 2. Tecnologias e ferramentas
 
 ## 2.1. Stack principal
 
@@ -48,7 +141,7 @@ O frontend não será responsável por regras financeiras, decisões de autoriza
 - Proibição de dependências desnecessárias.
 - Verificação de compatibilidade e vulnerabilidades.
 
-# 3. Arquitetura do frontend
+## 3. Arquitetura do frontend
 
 ## 3.1. Organização arquitetural
 
@@ -127,11 +220,12 @@ frontend/
 ├── package.json
 ├── package-lock.json
 └── vite.config.js
+
 ```
 
 A estrutura definitiva poderá ser ajustada durante a organização do repositório, sem alterar as responsabilidades arquiteturais estabelecidas.
 
-# 4. Identidade visual e design system
+## 4. Identidade visual e design system
 
 ## 4.1. Conceito visual
 
@@ -154,7 +248,7 @@ Não deverá existir alternância para tema claro.
 ## 4.2. Paleta de cores
 
 | Aplicação | Cor |
-|---|---|
+| --- | --- |
 | Fundo principal | `#080B12` |
 | Superfícies e cards | `#111827` |
 | Ação principal | `#176BFF` |
@@ -221,7 +315,7 @@ Criar componentes reutilizáveis para:
 
 Os componentes deverão apresentar estados visuais consistentes.
 
-# 5. Navegação e rotas
+## 5. Navegação e rotas
 
 ## 5.1. Área pública
 
@@ -295,7 +389,7 @@ Rotas previstas:
 
 A proteção de rotas no frontend é apenas uma camada de UX. A autorização definitiva será realizada pelo backend em todas as requisições.
 
-# 6. Área pública
+## 6. Área pública
 
 ## 6.1. Página inicial
 
@@ -339,7 +433,7 @@ Elementos:
 - Validação da nova senha.
 - Feedback de conclusão.
 
-# 7. Área do cliente
+## 7. Área do cliente
 
 ## 7.1. Dashboard
 
@@ -532,7 +626,7 @@ As compras simuladas debitam o saldo bancário e consomem o limite de gasto.
 
 O cliente poderá habilitar 2FA opcionalmente.
 
-# 8. Área administrativa
+## 8. Área administrativa
 
 ## 8.1. Dashboard administrativo
 
@@ -685,7 +779,7 @@ O frontend não deverá apagar histórico de tentativas nem manipular diretament
 - Ações administrativas permitidas.
 - Confirmação e auditoria de operações sensíveis.
 
-# 9. Autenticação e segurança
+## 9. Autenticação e segurança
 
 ## 9.1. Integração com autenticação
 
@@ -758,7 +852,7 @@ O backend deverá validar perfil, titularidade, permissões e escopo de cada ope
 - Não confiar em parâmetros fornecidos pelo navegador.
 - Não permitir que alterações no cliente contornem regras do servidor.
 
-# 10. Integração com a API REST
+## 10. Integração com a API REST
 
 ## 10.1. Comunicação
 
@@ -845,7 +939,7 @@ O frontend deverá:
 - Não repetir automaticamente operações financeiras sem controle.
 - Tratar respostas de conflito.
 
-# 11. Formulários e validação
+## 11. Formulários e validação
 
 ## 11.1. Bibliotecas
 
@@ -872,7 +966,7 @@ O frontend deverá:
 - Não confiar em valores calculados pelo navegador.
 - Backend responsável pelo cálculo e validação oficial.
 
-# 12. Responsividade
+## 12. Responsividade
 
 A aplicação deverá adotar abordagem mobile-first.
 
@@ -897,7 +991,7 @@ Requisitos:
 
 Nenhuma funcionalidade essencial deverá depender exclusivamente de uma resolução específica.
 
-# 13. Acessibilidade
+## 13. Acessibilidade
 
 Seguir boas práticas de acessibilidade, considerando WCAG.
 
@@ -914,7 +1008,7 @@ Requisitos:
 - Compatibilidade com leitores de tela.
 - Respeito à preferência por redução de movimento.
 
-# 14. Desempenho e experiência do usuário
+## 14. Desempenho e experiência do usuário
 
 - Carregamento eficiente.
 - Divisão de código por rotas quando apropriado.
@@ -931,7 +1025,7 @@ Requisitos:
 
 Não realizar otimizações prematuras que aumentem a complexidade sem benefício demonstrável.
 
-# 15. Estados e feedback visual
+## 15. Estados e feedback visual
 
 Todas as telas que dependem da API deverão contemplar:
 
@@ -949,7 +1043,7 @@ Todas as telas que dependem da API deverão contemplar:
 
 Operações financeiras deverão apresentar confirmação e resultado de forma clara, sem indicar sucesso antes da confirmação do backend.
 
-# 16. Testes e qualidade
+## 16. Testes e qualidade
 
 ## 16.1. Vitest
 
@@ -1012,7 +1106,7 @@ Testar:
 
 Os testes frontend não substituem os testes de autorização e segurança do backend.
 
-# 17. Variáveis de ambiente
+## 17. Variáveis de ambiente
 
 Utilizar variáveis de ambiente para configurações específicas do ambiente.
 
@@ -1030,7 +1124,7 @@ Regras:
 - Não versionar arquivos `.env` reais.
 - Validar configurações necessárias na inicialização.
 
-# 18. Padrões de desenvolvimento
+## 18. Padrões de desenvolvimento
 
 Aplicar:
 
@@ -1063,7 +1157,7 @@ Evitar:
 - Armazenamento inseguro de tokens.
 - Confiança em validações exclusivamente frontend.
 
-# 19. Limites de responsabilidade
+## 19. Limites de responsabilidade
 
 O frontend não será responsável por:
 
@@ -1083,7 +1177,7 @@ O frontend não será responsável por:
 
 Essas responsabilidades pertencem ao backend e aos módulos correspondentes.
 
-# 20. Critérios de aceite
+## 20. Critérios de aceite
 
 A implementação do frontend será considerada adequada quando:
 
@@ -1106,7 +1200,7 @@ A implementação do frontend será considerada adequada quando:
 17. A aplicação funcionar nos ambientes definidos pelo projeto.
 18. A documentação técnica estiver atualizada.
 
-# 21. Diretriz final
+## 21. Diretriz final
 
 O frontend do MyBank deverá oferecer uma experiência premium, consistente, responsiva e segura, mantendo separação rigorosa entre apresentação e regras de negócio.
 
@@ -1116,10 +1210,10 @@ O desenvolvimento será realizado em etapas pequenas e aprovadas individualmente
 
 **Fim da especificação frontend.**
 
-# Complemento aprovado — CPF e reprocessamento da Outbox
+## 22. Decisões complementares aprovadas — CPF e Outbox
 
 O frontend não solicita nem exibe CPF em áreas que não precisem dele e não apresenta CPF, ciphertext ou HMAC em logs de interface.
 
 Na área administrativa da Outbox, a interface pode mostrar o estado, as tentativas e o erro operacional autorizado para consulta. O comando de reprocessamento exige justificativa, confirmação adicional e reautenticação segundo os contratos da API. Após `202 Accepted`, a interface acompanha o resultado pela `statusUrl` recebida, sem inferir sucesso final a partir da aceitação. O histórico de tentativas não pode ser apagado nem editado pelo frontend.
 
-A disponibilidade do comando depende da elegibilidade definida pelo backend. A divergência documental entre os estados terminais `FAILED` e `DEAD_LETTER` permanece pendente.
+A interface oferece o comando somente quando o backend indicar elegibilidade em estado `FAILED`. `DEAD_LETTER` pode identificar encaminhamento/armazenamento operacional, mas não é estado nem critério autônomo de elegibilidade.

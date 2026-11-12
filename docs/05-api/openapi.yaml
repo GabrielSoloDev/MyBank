@@ -1735,9 +1735,9 @@ paths:
       description: |
         Operação exclusiva de ADMIN. Exige 2FA, reautenticação vinculada à ação,
         justificativa, confirmação, idempotência e auditoria. Preserva o payload
-        original e todas as tentativas anteriores. A solicitação é elegível para
-        estado terminal FAILED conforme a decisão complementar v1.1; há divergência
-        documental pendente com DEAD_LETTER na revisão da modelagem de dados.
+        original e todas as tentativas anteriores. Somente eventos elegíveis em estado
+        terminal FAILED podem ser reprocessados. DEAD_LETTER é encaminhamento ou
+        armazenamento operacional, não um estado alternativo nem critério de elegibilidade.
       parameters:
         - $ref: '#/components/parameters/EventId'
         - $ref: '#/components/parameters/IdempotencyKey'
@@ -4008,6 +4008,11 @@ components:
           format: uri-reference
           description: Caminho versionado para consultar estado e tentativas do evento.
 
+    OutboxEventStatus:
+      type: string
+      enum: [PENDING, PROCESSING, FAILED, PROCESSED]
+      description: FAILED é o estado terminal oficial de falha. DEAD_LETTER é encaminhamento/armazenamento operacional, não estado.
+
     OutboxEvent:
       type: object
       required: [eventId, status]
@@ -4015,8 +4020,7 @@ components:
         eventId:
           $ref: '#/components/schemas/UUID'
         status:
-          type: string
-          description: Estado da Outbox; enumeração depende da harmonização pendente entre FAILED e DEAD_LETTER.
+          $ref: '#/components/schemas/OutboxEventStatus'
         attempts:
           type: array
           description: Histórico preservado das tentativas de processamento.

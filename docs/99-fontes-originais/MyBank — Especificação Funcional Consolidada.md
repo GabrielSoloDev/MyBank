@@ -1011,4 +1011,4 @@ Conforme a consolidação técnica complementar v1.1:
 - As condições efetivamente aprovadas de cada empréstimo contratado formam snapshot imutável, preservado após quitação e independente de alterações futuras das configurações.
 - Estornos administrativos são integrais, exclusivos de ADMIN, com 2FA, reautenticação, justificativa, confirmação, auditoria, idempotência e limites configuráveis. A correção ocorre por lançamentos compensatórios; lançamentos originais do Ledger não são alterados.
 - Reprocessamentos administrativos da Outbox preservam o histórico de tentativas, não modificam o payload original, e são idempotentes, auditados e protegidos contra concorrência.
-- O estado terminal elegível aparece como `FAILED` na decisão complementar v1.1. A revisão de modelagem descreve `DEAD_LETTER`; esta divergência está pendente e não é resolvida por este complemento.
+- `FAILED` é o estado terminal oficial e único elegível para reprocessamento, após validação dos demais critérios. `DEAD_LETTER` descreve somente o encaminhamento ou armazenamento operacional de eventos esgotados, não um estado alternativo.

@@ -1,14 +1,14 @@
 # MyBank — Auditoria da Consolidação Documental
 
-**Data:** 2026-11-12  
+**Data:** 2026-11-12 — revisão após solicitação AJUSTAR
 **Escopo:** consolidação documental e auditoria cruzada; nenhuma implementação funcional.
 
 ## 1. Inventário
 
 | Documento / artefato | Estado identificado | Observação |
 |---|---|---|
-| `AGENTS.md` | Regras permanentes; arquivo local ignorado pelo Git | Atualizado para registrar decisões complementares e a pendência de estado da Outbox. |
-| `ROADMAP.md` | Planejamento com etapas em estados distintos; arquivo local ignorado pelo Git | Etapa 9 marcada como aguardando aprovação; Etapa 10 continua não iniciada. |
+| `AGENTS.md` | Regras permanentes | Atualizado com o estado oficial `FAILED` e o significado operacional de dead-letter. Agora aparece como arquivo não rastreado no Git. |
+| `ROADMAP.md` | Planejamento com etapas em estados distintos | Etapa 9 permanece aguardando aprovação; Etapa 10 continua não iniciada. Agora aparece como arquivo não rastreado no Git. |
 | `docs/MyBank — ADRs.md` | Catálogo com status geral “Proposto para consolidação documental”; vários ADRs internos `ACEITO` | Recebeu nota de rastreabilidade sem mudar o status geral. |
 | `docs/MyBank — Especificação Funcional Consolidada.md` | Versão 1.0, proposta para aprovação | Recebeu complemento das decisões aprovadas v1.1. |
 | `docs/MyBank — Arquitetura e Diagramas.md` | Versão 1.0, proposta para aprovação | Recebeu complemento de segurança do CPF e responsabilidades da Outbox. |
@@ -42,22 +42,23 @@ Nenhum valor numérico de limite de estorno ou parâmetro operacional foi acresc
 
 ### Registradas sem decisão unilateral
 
-1. **Estado terminal da Outbox:** a consolidação aprovada v1.1 considera `FAILED` terminal e elegível; a revisão da modelagem declara que `FAILED` não é terminal, usa `DEAD_LETTER` após esgotar tentativas e permite reprocessar esse estado. Requer decisão explícita para harmonizar estados, elegibilidade e persistência.
-2. **Corpo do reprocessamento:** a consolidação v1.1 lista confirmação adicional como requisito, mas o exemplo JSON contém apenas `reason`. Os contratos atualizados e OpenAPI exigem `confirmation: true`, seguindo o requisito de confirmação; o exemplo da fonte aprovada permanece divergente e precisa de ratificação editorial.
-3. **Persistência de CPF e snapshot:** a decisão aprovada define dados a preservar, mas não há DER/dicionário v1.0 para receber campos, tipos, índices e restrições sem reconstrução especulativa.
+1. **Persistência de CPF e snapshot:** a decisão aprovada define dados a preservar, mas não há DER/dicionário v1.0 para revisar campos, tipos, índices e restrições sem reconstrução especulativa. Os documentos originais foram solicitados para concluir essa auditoria.
 
-### Resolvidas dentro do escopo documental
+### Corrigidas nesta revisão
 
-- A ausência do arquivo OpenAPI standalone foi suprida por extração do bloco YAML já existente, preservando a especificação completa e adicionando os contratos aprovados.
-- `statusUrl` agora aponta para um recurso GET descrito na OpenAPI.
-- A resposta `202` usa os campos aprovados (`eventId`, `status`, `message`, `statusUrl`) e o estado inicial `PENDING`.
+- `FAILED` foi adotado como estado terminal oficial e elegível a reprocessamento. `DEAD_LETTER` é apenas encaminhamento/armazenamento operacional, não estado alternativo.
+- O endpoint e os contratos aceitam reprocessamento somente de eventos elegíveis em `FAILED`.
+- O exemplo da consolidação complementar v1.1 agora inclui `confirmation: true`; contratos e OpenAPI mantêm confirmação, justificativa, reautenticação e auditoria.
+- A ausência do arquivo OpenAPI standalone foi suprida por extração do bloco YAML existente, preservando a especificação e adicionando os contratos aprovados.
+- `statusUrl` aponta para um recurso GET descrito na OpenAPI; a resposta `202` contém `eventId`, `status`, `message` e `statusUrl`, com estado inicial `PENDING`.
+- As regras de `.gitignore` foram ajustadas para permitir versionar `AGENTS.md` e `ROADMAP.md`, preservando seu conteúdo.
 
 ## 4. Resultado da validação OpenAPI
 
 - **Versão declarada:** 3.1.1.
 - **Sintaxe YAML:** aprovada pelo parser PyYAML 6.0.3 instalado no ambiente.
 - **Checagens estruturais direcionadas:** verificadas versão, presença das duas rotas da Outbox, resposta 202 referenciando o schema dedicado, segurança bearer global e parâmetros de evento, idempotência e reautenticação.
-- **Validação integral por ferramenta OpenAPI compatível:** não executada. `@redocly/cli` não está disponível localmente e a tentativa offline com `npx --no-install` terminou com `ENOTCACHED`. A instalação de ferramentas está proibida nesta etapa; portanto, a especificação não é declarada estruturalmente validada.
+- **Validação integral por ferramenta OpenAPI compatível:** não executada. `redocly`, `swagger-cli`, `openapi-generator-cli`, `openapi_spec_validator` e `openapi_schema_validator` não estão disponíveis. A tentativa anterior `npx --offline --no-install @redocly/cli lint docs/04-api/openapi.yaml` terminou com `ENOTCACHED`. A instalação de ferramentas está proibida nesta etapa; portanto, a especificação não é declarada estruturalmente validada.
 
 ## 5. Auditoria cruzada final
 
@@ -73,18 +74,20 @@ Nenhum valor numérico de limite de estorno ou parâmetro operacional foi acresc
 | Preservação do histórico de tentativas | Refletida em requisitos, fluxo, frontend e contratos; permanece sem alteração destrutiva. |
 | Contrato assíncrono e `statusUrl` | `202 Accepted` e recurso GET de consulta incluídos na OpenAPI e contratos REST. |
 | Correspondência frontend/API | Frontend orientado a acompanhar a `statusUrl` e preservar tentativas; elegibilidade permanece sob autoridade do backend. |
-| Máquina de estados | Inconsistente entre `FAILED` e `DEAD_LETTER`; não resolvida. |
+| Máquina de estados | `FAILED` é o estado terminal oficial; `DEAD_LETTER` é encaminhamento/armazenamento operacional. Reprocessamento exige estado `FAILED` e elegibilidade. |
 
 ## 6. Critérios de aceite
 
 - Inventário e estado local verificados antes das edições: **atendido**.
-- Decisões aprovadas incorporadas aos documentos disponíveis: **parcialmente atendido**, pois DER e dicionário-base estão ausentes e a divergência da Outbox permanece aberta.
+- Decisões aprovadas incorporadas aos documentos disponíveis: **parcialmente atendido**, pois DER e dicionário-base estão ausentes.
 - OpenAPI 3.1.1 localizada e endpoint integrado: **atendido**.
 - YAML sintaticamente validado: **atendido**.
 - OpenAPI validada integralmente por ferramenta compatível: **não atendido**; ferramenta não instalada e instalação vedada.
 - Auditoria cruzada concluída com pendências explicitadas: **atendido**.
 - Implementação funcional ou avanço ao ambiente: **não iniciado**, conforme restrição.
 
-## 7. Próxima etapa recomendada
+## 7. Git e próxima etapa recomendada
 
-Revisar as pendências documentais, decidir a máquina de estados terminal da Outbox e confirmar o requisito de `confirmation` no corpo. Disponibilizar o DER/dicionário aprovado e executar validação integral da OpenAPI em ambiente que já possua ferramenta compatível. A Etapa 9 permanece aguardando aprovação; a Etapa 10 não foi iniciada.
+`git check-ignore -v AGENTS.md ROADMAP.md` identificou as regras originais nas linhas 1 e 2 de `.gitignore`. As exceções `!AGENTS.md` e `!ROADMAP.md` foram adicionadas sem apagar ou substituir as regras anteriores. Após a alteração, `git check-ignore -v` mostra as exceções e `git status --short` lista ambos os arquivos como não rastreados (`??`), prontos para versionamento.
+
+Disponibilizar os documentos originais aprovados do DER e do dicionário de dados para concluir a auditoria de CPF e snapshot. Executar validação integral da OpenAPI em ambiente que já possua ferramenta compatível. A máquina de estados da Outbox e o corpo com `confirmation: true` foram harmonizados documentalmente. A Etapa 9 permanece aguardando aprovação; a Etapa 10 não foi iniciada.

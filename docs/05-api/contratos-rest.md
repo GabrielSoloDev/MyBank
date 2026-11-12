@@ -1,17 +1,113 @@
 # MyBank — Especificação Consolidada dos Contratos da API REST
 
-**Versão:** 1.1  
-**Status:** Proposta consolidada para revisão  
-**Padrão:** REST  
-**Formato:** JSON  
-**Especificação futura:** OpenAPI 3.1.1  
-**Prefixo:** `/api/v1`  
-**Moeda:** BRL  
-**Arquitetura:** Hexagonal + Monólito Modular
+| Campo | Valor |
+| --- | --- |
+| Identificador | MB-API-REST |
+| Classe | Documento oficial da biblioteca MyBank |
+| Original preservado | [MyBank — Especificação Consolidada dos Contratos da API REST.md](../99-fontes-originais/MyBank%20—%20Especificação%20Consolidada%20dos%20Contratos%20da%20API%20REST.md) |
+| Versão | 1.1 |
+| Status | Proposta consolidada para revisão |
+| Padrão | REST |
+| Formato | JSON |
+| Especificação futura | OpenAPI 3.1.1 |
+| Prefixo | `/api/v1` |
+| Moeda | BRL |
+| Arquitetura | Hexagonal + Monólito Modular |
 
 ---
 
-# 1. Objetivo e abrangência
+## Sumário
+
+- [1. Objetivo e abrangência](#1-objetivo-e-abrangencia)
+- [2. Convenções gerais](#2-convencoes-gerais)
+- [2.1. Endereçamento](#21-enderecamento)
+- [2.2. Formato de dados](#22-formato-de-dados)
+- [2.3. Métodos HTTP](#23-metodos-http)
+- [2.4. Cabeçalhos](#24-cabecalhos)
+- [3. Padronização de respostas](#3-padronizacao-de-respostas)
+- [3.1. Sucesso](#31-sucesso)
+- [3.2. Erros](#32-erros)
+- [3.3. Códigos HTTP](#33-codigos-http)
+- [4. Autenticação e identidade](#4-autenticacao-e-identidade)
+- [4.1. Cadastro e autenticação](#41-cadastro-e-autenticacao)
+- [4.2. Login em duas etapas](#42-login-em-duas-etapas)
+- [4.3. Validação do desafio](#43-validacao-do-desafio)
+- [4.4. Política de autenticação por perfil](#44-politica-de-autenticacao-por-perfil)
+- [4.5. Tokens e sessões](#45-tokens-e-sessoes)
+- [4.6. Segundo fator](#46-segundo-fator)
+- [4.7. Recuperação de senha e e-mail](#47-recuperacao-de-senha-e-e-mail)
+- [5. Reautenticação contextual](#5-reautenticacao-contextual)
+- [5.1. Endpoint](#51-endpoint)
+- [5.2. Regras](#52-regras)
+- [5.3. Matriz de reautenticação](#53-matriz-de-reautenticacao)
+- [6. Clientes](#6-clientes)
+- [7. Contas bancárias](#7-contas-bancarias)
+- [7.1. Endpoints](#71-endpoints)
+- [7.2. Saldo](#72-saldo)
+- [7.3. Extrato](#73-extrato)
+- [7.4. Contas conjuntas](#74-contas-conjuntas)
+- [8. Transações financeiras](#8-transacoes-financeiras)
+- [8.1. Transferências](#81-transferencias)
+- [8.2. Depósitos simulados](#82-depositos-simulados)
+- [8.3. Saques simulados](#83-saques-simulados)
+- [8.4. Processamento financeiro](#84-processamento-financeiro)
+- [9. Pagamentos](#9-pagamentos)
+- [9.1. Endpoints](#91-endpoints)
+- [10. Empréstimos](#10-emprestimos)
+- [10.1. Endpoints do cliente](#101-endpoints-do-cliente)
+- [10.2. Simulação](#102-simulacao)
+- [10.3. Solicitação](#103-solicitacao)
+- [10.4. Administração](#104-administracao)
+- [10.5. Pagamento integral de parcelas](#105-pagamento-integral-de-parcelas)
+- [11. Cartões virtuais](#11-cartoes-virtuais)
+- [11.1. Endpoints](#111-endpoints)
+- [12. Estornos administrativos](#12-estornos-administrativos)
+- [12.1. Endpoint](#121-endpoint)
+- [12.2. Política](#122-politica)
+- [12.3. Categorias elegíveis propostas e aprovadas](#123-categorias-elegiveis-propostas-e-aprovadas)
+- [12.4. Limites configuráveis](#124-limites-configuraveis)
+- [12.5. Fluxo de execução](#125-fluxo-de-execucao)
+- [13. Notificações](#13-notificacoes)
+- [14. Administração](#14-administracao)
+- [14.1. Clientes](#141-clientes)
+- [14.2. Contas](#142-contas)
+- [14.3. Administradores](#143-administradores)
+- [14.4. Configurações](#144-configuracoes)
+- [15. Auditoria e privacidade](#15-auditoria-e-privacidade)
+- [15.1. Auditoria](#151-auditoria)
+- [15.2. Privacidade](#152-privacidade)
+- [16. Processamento síncrono e assíncrono](#16-processamento-sincrono-e-assincrono)
+- [16.1. Operações síncronas](#161-operacoes-sincronas)
+- [16.2. Operações assíncronas](#162-operacoes-assincronas)
+- [16.3. HTTP 202](#163-http-202)
+- [17. Idempotência e concorrência](#17-idempotencia-e-concorrencia)
+- [17.1. Idempotência](#171-idempotencia)
+- [17.2. Concorrência](#172-concorrencia)
+- [18. Paginação, filtros e ordenação](#18-paginacao-filtros-e-ordenacao)
+- [19. Máquinas de estados](#19-maquinas-de-estados)
+- [19.1. Transações](#191-transacoes)
+- [19.2. Pagamentos](#192-pagamentos)
+- [19.3. Empréstimos](#193-emprestimos)
+- [19.4. Parcelas](#194-parcelas)
+- [19.5. Convites](#195-convites)
+- [19.6. Cartões](#196-cartoes)
+- [19.7. Clientes](#197-clientes)
+- [19.8. Contas](#198-contas)
+- [20. Segurança dos contratos](#20-seguranca-dos-contratos)
+- [21. Outbox e eventos](#21-outbox-e-eventos)
+- [22. Arquitetura de implementação](#22-arquitetura-de-implementacao)
+- [22.1. Adaptadores de entrada REST](#221-adaptadores-de-entrada-rest)
+- [22.2. Camada de aplicação](#222-camada-de-aplicacao)
+- [22.3. Domínio](#223-dominio)
+- [22.4. Adaptadores de saída](#224-adaptadores-de-saida)
+- [23. Organização modular dos endpoints](#23-organizacao-modular-dos-endpoints)
+- [24. Estratégia de testes dos contratos](#24-estrategia-de-testes-dos-contratos)
+- [25. Pendências e limites da especificação](#25-pendencias-e-limites-da-especificacao)
+- [26. Critérios de aceite](#26-criterios-de-aceite)
+- [27. Decisões complementares aprovadas — reprocessamento da Outbox](#27-decisoes-complementares-aprovadas-reprocessamento-da-outbox)
+- [Endpoint](#endpoint)
+
+## 1. Objetivo e abrangência
 
 Este documento define os contratos de comunicação entre o frontend React e o backend Spring Boot do MyBank.
 
@@ -33,7 +129,7 @@ A API representa um banco digital fictício, destinado a fins educacionais e de 
 
 Não existem operações bancárias reais, integração com instituições financeiras externas, Pix real, boletos reais, cartões físicos ou conversão de moedas.
 
-# 2. Convenções gerais
+## 2. Convenções gerais
 
 ## 2.1. Endereçamento
 
@@ -44,7 +140,7 @@ Todos os endpoints públicos deverão utilizar:
 Organização dos recursos:
 
 | Prefixo | Módulo |
-|---|---|
+| --- | --- |
 | `/auth` | Identity |
 | `/customers` | Customer |
 | `/accounts` | Account |
@@ -83,6 +179,7 @@ Exemplos:
   "currency": "BRL",
   "createdAt": "2026-11-12T14:30:00Z"
 }
+
 ```
 
 O frontend não deverá utilizar `float` ou `double` para cálculos financeiros. A representação monetária deverá preservar a precisão decimal.
@@ -90,7 +187,7 @@ O frontend não deverá utilizar `float` ou `double` para cálculos financeiros.
 ## 2.3. Métodos HTTP
 
 | Método | Finalidade |
-|---|---|
+| --- | --- |
 | GET | Consultar recursos |
 | POST | Criar recursos ou executar operações |
 | PUT | Substituir integralmente um recurso, quando aplicável |
@@ -110,19 +207,20 @@ Content-Type: application/json
 Accept: application/json
 Authorization: Bearer <access_token>
 X-Correlation-ID: <uuid>
+
 ```
 
 Cabeçalhos adicionais:
 
 | Cabeçalho | Utilização |
-|---|---|
+| --- | --- |
 | `Idempotency-Key` | Operações financeiras e operações críticas que exigem execução única |
 | `X-Reauthentication-Token` | Operações que exigem reautenticação |
 | `X-Correlation-ID` | Rastreamento de requisições e eventos |
 
 O backend deverá gerar um identificador de correlação quando o cliente não fornecer um.
 
-# 3. Padronização de respostas
+## 3. Padronização de respostas
 
 ## 3.1. Sucesso
 
@@ -139,6 +237,7 @@ Formato geral:
     "timestamp": "2026-11-12T14:30:00Z"
   }
 }
+
 ```
 
 Respostas de listagem poderão incluir informações de paginação em `meta`.
@@ -161,6 +260,7 @@ A API adotará o padrão conceitual Problem Details, com campos adicionais de id
   "timestamp": "2026-11-12T14:30:00Z",
   "errors": []
 }
+
 ```
 
 Regras:
@@ -175,7 +275,7 @@ Regras:
 ## 3.3. Códigos HTTP
 
 | Código | Significado |
-|---|---|
+| --- | --- |
 | 200 | Operação concluída |
 | 201 | Recurso criado |
 | 202 | Operação aceita para processamento posterior |
@@ -192,12 +292,12 @@ Regras:
 
 A API não deverá retornar HTTP 200 para representar uma operação financeira rejeitada ou com falha.
 
-# 4. Autenticação e identidade
+## 4. Autenticação e identidade
 
 ## 4.1. Cadastro e autenticação
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | POST | `/auth/register` | Registrar cliente |
 | POST | `/auth/login` | Autenticar usuário |
 | POST | `/auth/login/challenges/{challengeId}/verify` | Validar desafio de autenticação |
@@ -220,6 +320,7 @@ Requisição:
   "email": "cliente@example.com",
   "password": "senha"
 }
+
 ```
 
 O backend deverá verificar:
@@ -244,6 +345,7 @@ Se houver exigência de 2FA, o backend responderá HTTP 202:
     "expiresAt": "2026-11-12T14:35:00Z"
   }
 }
+
 ```
 
 O desafio temporário não representa uma sessão autenticada definitiva.
@@ -258,6 +360,7 @@ Requisição:
 {
   "code": "123456"
 }
+
 ```
 
 Resposta de sucesso:
@@ -271,6 +374,7 @@ Resposta de sucesso:
     "expiresIn": 600
   }
 }
+
 ```
 
 O Refresh Token será enviado por cookie seguro.
@@ -289,7 +393,7 @@ Regras:
 ## 4.4. Política de autenticação por perfil
 
 | Perfil | Autenticação |
-|---|---|
+| --- | --- |
 | CUSTOMER sem 2FA | Senha |
 | CUSTOMER com 2FA | Senha e TOTP |
 | ADMIN | Senha e TOTP obrigatório |
@@ -321,7 +425,7 @@ O frontend não deverá armazenar tokens de autenticação em `localStorage` ou 
 ## 4.6. Segundo fator
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | POST | `/auth/2fa/setup` | Iniciar configuração TOTP |
 | POST | `/auth/2fa/confirm` | Confirmar configuração |
 | POST | `/auth/2fa/verify` | Validar código |
@@ -343,7 +447,7 @@ Regras:
 ## 4.7. Recuperação de senha e e-mail
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | POST | `/auth/password/forgot` | Solicitar recuperação |
 | POST | `/auth/password/reset` | Redefinir senha |
 | POST | `/auth/email/verify` | Verificar e-mail |
@@ -351,7 +455,7 @@ Regras:
 
 As respostas não deverão permitir enumeração de usuários.
 
-# 5. Reautenticação contextual
+## 5. Reautenticação contextual
 
 ## 5.1. Endpoint
 
@@ -365,6 +469,7 @@ Requisição:
   "totpCode": "123456",
   "action": "ADMIN_TRANSACTION_REVERSAL"
 }
+
 ```
 
 Resposta:
@@ -377,6 +482,7 @@ Resposta:
     "action": "ADMIN_TRANSACTION_REVERSAL"
   }
 }
+
 ```
 
 ## 5.2. Regras
@@ -395,6 +501,7 @@ O frontend enviará:
 
 ```http
 X-Reauthentication-Token: <temporary-token>
+
 ```
 
 A reautenticação será exigida conforme a política de risco e a criticidade da operação.
@@ -402,7 +509,7 @@ A reautenticação será exigida conforme a política de risco e a criticidade d
 ## 5.3. Matriz de reautenticação
 
 | Operação | CUSTOMER | ADMIN |
-|---|---|---|
+| --- | --- | --- |
 | Alterar senha | Senha atual | Senha atual |
 | Alterar dados sensíveis | Senha atual | Senha e 2FA |
 | Alterar segurança | Senha e 2FA se habilitado | Senha e 2FA |
@@ -416,10 +523,10 @@ Operações administrativas críticas também exigirão justificativa e confirma
 
 Não haverá segunda aprovação administrativa.
 
-# 6. Clientes
+## 6. Clientes
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | GET | `/customers/me` | Consultar perfil |
 | PATCH | `/customers/me` | Atualizar dados permitidos |
 | GET | `/customers/me/accounts` | Listar contas vinculadas |
@@ -433,12 +540,12 @@ O status de identidade (`users.status`) será independente do status de negócio
 
 A autorização deverá considerar ambos.
 
-# 7. Contas bancárias
+## 7. Contas bancárias
 
 ## 7.1. Endpoints
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | POST | `/accounts` | Solicitar abertura |
 | GET | `/accounts` | Listar contas acessíveis |
 | GET | `/accounts/{accountId}` | Consultar conta |
@@ -465,6 +572,7 @@ Resposta:
     "updatedAt": "2026-11-12T14:30:00Z"
   }
 }
+
 ```
 
 O saldo será obtido da projeção consolidada do Ledger.
@@ -480,7 +588,7 @@ O saldo disponível corresponde ao valor efetivamente contabilizado.
 Parâmetros:
 
 | Parâmetro | Tipo | Obrigatório |
-|---|---|---|
+| --- | --- | --- |
 | startDate | date | Não |
 | endDate | date | Não |
 | type | string | Não |
@@ -513,7 +621,7 @@ Exemplo:
 ## 7.4. Contas conjuntas
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | GET | `/accounts/{accountId}/holders` | Listar titulares |
 | POST | `/accounts/{accountId}/invitations` | Convidar titular |
 | GET | `/accounts/{accountId}/invitations` | Listar convites |
@@ -534,12 +642,12 @@ Regras:
 - Saída voluntária respeitará o número mínimo de titulares.
 - Participações percentuais definidas deverão totalizar 100%.
 
-# 8. Transações financeiras
+## 8. Transações financeiras
 
 ## 8.1. Transferências
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | POST | `/transfers` | Criar transferência |
 | GET | `/transfers/{transferId}` | Consultar transferência |
 | GET | `/accounts/{accountId}/transfers` | Listar transferências |
@@ -553,12 +661,14 @@ Requisição:
   "amount": "250.00",
   "description": "Transferência entre contas"
 }
+
 ```
 
 Cabeçalho obrigatório:
 
 ```http
 Idempotency-Key: <chave-única>
+
 ```
 
 Regras:
@@ -576,7 +686,7 @@ Regras:
 ## 8.2. Depósitos simulados
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | POST | `/deposits` | Solicitar depósito |
 | GET | `/deposits/{depositId}` | Consultar depósito |
 | GET | `/accounts/{accountId}/deposits` | Listar depósitos |
@@ -588,6 +698,7 @@ Requisição:
   "accountId": "uuid",
   "amount": "500.00"
 }
+
 ```
 
 O depósito será simulado e terá contrapartida em conta contábil de compensação.
@@ -595,7 +706,7 @@ O depósito será simulado e terá contrapartida em conta contábil de compensa�
 ## 8.3. Saques simulados
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | POST | `/withdrawals` | Solicitar saque |
 | GET | `/withdrawals/{withdrawalId}` | Consultar saque |
 | GET | `/accounts/{accountId}/withdrawals` | Listar saques |
@@ -607,6 +718,7 @@ Requisição:
   "accountId": "uuid",
   "amount": "100.00"
 }
+
 ```
 
 O saque será simulado, com contrapartida contábil correspondente.
@@ -629,12 +741,12 @@ O backend deverá garantir:
 - Atualização atômica da projeção de saldo.
 - Imutabilidade do Ledger.
 
-# 9. Pagamentos
+## 9. Pagamentos
 
 ## 9.1. Endpoints
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | GET | `/payment-providers` | Listar prestadores simulados |
 | POST | `/payments` | Criar pagamento |
 | GET | `/payments/{paymentId}` | Consultar pagamento |
@@ -651,6 +763,7 @@ Requisição:
   "description": "Conta de energia",
   "scheduledAt": null
 }
+
 ```
 
 Categorias:
@@ -673,12 +786,12 @@ Regras:
 - Pagamentos agendados poderão ser cancelados antes do processamento.
 - Pagamentos em processamento não poderão ser cancelados diretamente.
 
-# 10. Empréstimos
+## 10. Empréstimos
 
 ## 10.1. Endpoints do cliente
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | POST | `/loans/simulations` | Simular empréstimo |
 | POST | `/loans` | Solicitar empréstimo |
 | GET | `/loans` | Listar empréstimos |
@@ -701,6 +814,7 @@ Requisição:
   "principalAmount": "10000.00",
   "installmentsCount": 12
 }
+
 ```
 
 A resposta deverá apresentar:
@@ -727,6 +841,7 @@ Requisição:
   "installmentsCount": 12,
   "declaredMonthlyIncome": "5000.00"
 }
+
 ```
 
 A análise considerará:
@@ -744,7 +859,7 @@ O backend deverá controlar concorrência na análise e aprovação.
 ## 10.4. Administração
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | GET | `/admin/loans` | Listar solicitações |
 | GET | `/admin/loans/{loanId}` | Consultar solicitação |
 | POST | `/admin/loans/{loanId}/review` | Iniciar análise |
@@ -770,6 +885,7 @@ Requisição:
 {
   "paymentMethod": "SIMULATED_SETTLEMENT"
 }
+
 ```
 
 O backend determinará o valor integral devido.
@@ -788,6 +904,7 @@ Resposta:
     "paidAt": "2026-11-12T14:30:00Z"
   }
 }
+
 ```
 
 Regras:
@@ -804,12 +921,12 @@ Regras:
 
 O encerramento da conta bancária não extingue a obrigação do empréstimo.
 
-# 11. Cartões virtuais
+## 11. Cartões virtuais
 
 ## 11.1. Endpoints
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | POST | `/cards` | Criar cartão virtual |
 | GET | `/cards` | Listar cartões |
 | GET | `/cards/{cardId}` | Consultar cartão |
@@ -833,7 +950,7 @@ Regras:
 - Não armazenar CVV ou dados equivalentes.
 - Número demonstrativo não poderá representar PAN real.
 
-# 12. Estornos administrativos
+## 12. Estornos administrativos
 
 ## 12.1. Endpoint
 
@@ -845,6 +962,7 @@ Requisição:
 {
   "reason": "Correção de operação processada indevidamente"
 }
+
 ```
 
 Cabeçalho obrigatório:
@@ -852,6 +970,7 @@ Cabeçalho obrigatório:
 ```http
 Idempotency-Key: <chave-única>
 X-Reauthentication-Token: <temporary-token>
+
 ```
 
 ## 12.2. Política
@@ -876,7 +995,7 @@ Regras aprovadas:
 ## 12.3. Categorias elegíveis propostas e aprovadas
 
 | Categoria | Tratamento |
-|---|---|
+| --- | --- |
 | Transferência | Elegível, respeitando condições financeiras |
 | Depósito simulado | Elegível |
 | Saque simulado | Elegível |
@@ -918,10 +1037,10 @@ A alteração dos parâmetros deverá ser autorizada, justificada e auditada.
 
 Se uma validação falhar, nenhuma alteração financeira deverá ser contabilizada.
 
-# 13. Notificações
+## 13. Notificações
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | GET | `/notifications` | Listar notificações |
 | GET | `/notifications/{notificationId}` | Consultar notificação |
 | PATCH | `/notifications/{notificationId}/read` | Marcar como lida |
@@ -937,7 +1056,7 @@ O processamento de notificações será assíncrono.
 
 Falhas deverão ser registradas, com tentativas limitadas, backoff progressivo e estado terminal de falha quando o limite for atingido.
 
-# 14. Administração
+## 14. Administração
 
 Todos os endpoints administrativos exigirão:
 
@@ -951,7 +1070,7 @@ Todos os endpoints administrativos exigirão:
 ## 14.1. Clientes
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | GET | `/admin/customers` | Listar clientes |
 | GET | `/admin/customers/{customerId}` | Consultar cliente |
 | POST | `/admin/customers/{customerId}/block` | Bloquear |
@@ -962,7 +1081,7 @@ Todos os endpoints administrativos exigirão:
 ## 14.2. Contas
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | GET | `/admin/accounts` | Listar contas |
 | GET | `/admin/accounts/{accountId}` | Consultar conta |
 | POST | `/admin/accounts/{accountId}/block` | Bloquear |
@@ -975,7 +1094,7 @@ As transições deverão respeitar as regras do domínio.
 ## 14.3. Administradores
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | GET | `/admin/administrators` | Listar administradores |
 | POST | `/admin/administrators/invitations` | Convidar administrador |
 | GET | `/admin/administrators/invitations` | Consultar convites |
@@ -996,19 +1115,19 @@ Regras:
 ## 14.4. Configurações
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | GET | `/admin/settings` | Consultar configurações |
 | GET | `/admin/settings/{key}` | Consultar configuração |
 | PATCH | `/admin/settings/{key}` | Alterar configuração |
 
 Configurações críticas exigirão reautenticação, justificativa e auditoria.
 
-# 15. Auditoria e privacidade
+## 15. Auditoria e privacidade
 
 ## 15.1. Auditoria
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | GET | `/admin/audit-events` | Consultar eventos |
 | GET | `/admin/audit-events/{eventId}` | Consultar evento específico |
 
@@ -1028,7 +1147,7 @@ Eventos de auditoria não poderão ser alterados ou removidos por operações ad
 ## 15.2. Privacidade
 
 | Método | Endpoint | Finalidade |
-|---|---|---|
+| --- | --- | --- |
 | POST | `/privacy/requests` | Registrar solicitação |
 | GET | `/privacy/requests` | Listar solicitações |
 | GET | `/privacy/requests/{requestId}` | Consultar solicitação |
@@ -1037,12 +1156,12 @@ O tratamento deverá observar LGPD, finalidade, base legal e obrigações de ret
 
 Não será permitida exclusão indiscriminada de transações, Ledger ou auditoria.
 
-# 16. Processamento síncrono e assíncrono
+## 16. Processamento síncrono e assíncrono
 
 ## 16.1. Operações síncronas
 
 | Operação | Processamento |
-|---|---|
+| --- | --- |
 | Transferência | Síncrono |
 | Depósito simulado | Síncrono |
 | Saque simulado | Síncrono |
@@ -1058,7 +1177,7 @@ A resposta somente poderá indicar conclusão após a confirmação da contabili
 ## 16.2. Operações assíncronas
 
 | Operação | Processamento |
-|---|---|
+| --- | --- |
 | Notificações | Assíncrono |
 | Eventos Outbox | Assíncrono |
 | Comprovantes auxiliares | Assíncrono |
@@ -1079,6 +1198,7 @@ Exemplo:
     "statusUrl": "/api/v1/transactions/uuid"
   }
 }
+
 ```
 
 O cliente deverá consultar o recurso para acompanhar o processamento.
@@ -1087,7 +1207,7 @@ A criação de um agendamento poderá retornar HTTP 201 quando o recurso agendad
 
 O backend não poderá apresentar uma operação como `COMPLETED` antes da contabilização.
 
-# 17. Idempotência e concorrência
+## 17. Idempotência e concorrência
 
 ## 17.1. Idempotência
 
@@ -1122,7 +1242,7 @@ O backend deverá:
 - Evitar estornos duplicados.
 - Atualizar a projeção de saldo atomicamente.
 
-# 18. Paginação, filtros e ordenação
+## 18. Paginação, filtros e ordenação
 
 Listagens deverão utilizar paginação padronizada.
 
@@ -1152,9 +1272,10 @@ Resposta:
     "correlationId": "uuid"
   }
 }
+
 ```
 
-# 19. Máquinas de estados
+## 19. Máquinas de estados
 
 A API deverá respeitar as máquinas de estados aprovadas.
 
@@ -1225,7 +1346,7 @@ Cartões bloqueados poderão ser reativados. Cartões cancelados não poderão s
 
 As alterações de estado ocorrerão por operações específicas, com validação no domínio e histórico persistido.
 
-# 20. Segurança dos contratos
+## 20. Segurança dos contratos
 
 A API deverá aplicar:
 
@@ -1252,7 +1373,7 @@ O frontend não será considerado uma fronteira de segurança.
 
 Ocultar menus, botões ou rotas não substitui autorização no backend.
 
-# 21. Outbox e eventos
+## 21. Outbox e eventos
 
 A Outbox será utilizada para publicação confiável de eventos internos.
 
@@ -1279,7 +1400,7 @@ O reprocessamento deverá iniciar um novo ciclo de execução sem apagar as tent
 
 O payload dos eventos não deverá conter dados sensíveis desnecessários.
 
-# 22. Arquitetura de implementação
+## 22. Arquitetura de implementação
 
 A implementação dos contratos deverá respeitar a Arquitetura Hexagonal e a organização modular.
 
@@ -1324,10 +1445,10 @@ Responsabilidades:
 
 Controllers não deverão conter regras de negócio nem acessar diretamente repositórios JPA.
 
-# 23. Organização modular dos endpoints
+## 23. Organização modular dos endpoints
 
 | Módulo | Responsabilidade |
-|---|---|
+| --- | --- |
 | Identity | Autenticação, sessões, senha e 2FA |
 | Customer | Perfil e dados do cliente |
 | Account | Contas, titulares e convites |
@@ -1343,7 +1464,7 @@ Controllers não deverão conter regras de negócio nem acessar diretamente repo
 
 O Ledger não deverá oferecer endpoints públicos para alteração direta de lançamentos.
 
-# 24. Estratégia de testes dos contratos
+## 24. Estratégia de testes dos contratos
 
 A implementação futura deverá contemplar:
 
@@ -1381,7 +1502,7 @@ Ferramentas previstas:
 - Testes de integração HTTP.
 - Validação OpenAPI.
 
-# 25. Pendências e limites da especificação
+## 25. Pendências e limites da especificação
 
 Esta versão incorpora os seis fechamentos aprovados.
 
@@ -1396,7 +1517,7 @@ Os seguintes detalhes ainda deverão ser tratados em documentos complementares, 
 
 Esses itens deverão ser detalhados sem contradizer decisões já aprovadas.
 
-# 26. Critérios de aceite
+## 26. Critérios de aceite
 
 A especificação será considerada concluída quando:
 
@@ -1420,14 +1541,14 @@ A especificação será considerada concluída quando:
 
 **Fim do documento — MyBank API REST v1.1**
 
-# Complemento aprovado — reprocessamento administrativo da Outbox
+## 27. Decisões complementares aprovadas — reprocessamento da Outbox
 
 ## Endpoint
 
 `POST /api/v1/admin/outbox-events/{eventId}/reprocess`
 
-O comando é exclusivo de ADMIN e exige autenticação, 2FA, `X-Reauthentication-Token`, justificativa, confirmação adicional, `Idempotency-Key` e auditoria. O corpo contém `reason` (10 a 500 caracteres) e `confirmation: true`. A confirmação é incluída porque a decisão complementar exige confirmação adicional, embora seu exemplo de corpo v1.1 mostre somente `reason`; essa diferença do exemplo fica registrada para revisão.
+O comando é exclusivo de ADMIN e exige autenticação, 2FA, `X-Reauthentication-Token`, justificativa, confirmação adicional, `Idempotency-Key` e auditoria. O corpo contém `reason` (10 a 500 caracteres) e `confirmation: true`. A confirmação é incluída porque a decisão complementar exige confirmação adicional, e o exemplo da consolidação complementar v1.1 foi harmonizado para incluí-la.
 
 A solicitação elegível retorna `202 Accepted`, com `eventId`, estado inicial `PENDING`, mensagem e `statusUrl` apontando para `/api/v1/admin/outbox-events/{eventId}`. O recurso de consulta é protegido para ADMIN e apresenta o estado e o histórico de tentativas conforme a política de acesso. A aceitação não apaga tentativas anteriores nem altera o conteúdo original do evento.
 
-O estado terminal elegível está inconsistente entre documentos (`FAILED` na decisão complementar v1.1 e `DEAD_LETTER` na revisão de modelagem). A API não deve tratar essa divergência como resolvida até decisão explícita.
+Somente eventos elegíveis com estado `FAILED` podem ser reprocessados, após validação pelo backend. `DEAD_LETTER` designa o encaminhamento ou armazenamento operacional de eventos esgotados e não é estado alternativo nem critério autônomo de elegibilidade.

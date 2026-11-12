@@ -1,124 +1,3 @@
-# MyBank — Especificação OpenAPI 3.1.1
-
-**Versão da API:** 1.1  
-**Versão OpenAPI:** 3.1.1  
-**Status:** Proposta para revisão — consolidação documental em auditoria
-**Formato:** YAML  
-**Base path:** `/api/v1`  
-**Formato de dados:** JSON / UTF-8  
-**Moeda:** BRL  
-**Fuso de negócio:** `America/Sao_Paulo`
-
-## 1. Objetivo
-
-Esta especificação formaliza os contratos REST do MyBank para permitir:
-
-- Documentação interativa da API.
-- Geração e validação de clientes HTTP.
-- Validação automatizada de requisições e respostas.
-- Testes de contrato.
-- Verificação de compatibilidade entre frontend e backend.
-- Rastreabilidade entre requisitos, endpoints e schemas.
-
-A especificação deverá permanecer alinhada aos documentos aprovados de requisitos, arquitetura, DER, dicionário de dados e contratos REST v1.1.
-
-## 2. Soluções incorporadas para os pontos de atenção
-
-### 2.1. Limites administrativos de estorno
-
-Os limites serão configuráveis em `system_settings`, sem valores numéricos padrão inventados.
-
-A política deverá contemplar:
-
-- Valor máximo por estorno.
-- Valor acumulado máximo por período.
-- Quantidade máxima de estornos por período.
-- Categorias elegíveis.
-- Idade máxima da transação original.
-- Condições adicionais de elegibilidade.
-
-**Regra de segurança:** a operação de estorno ficará indisponível enquanto qualquer parâmetro obrigatório estiver ausente, inválido ou inconsistente. Não será permitido interpretar ausência de configuração como limite ilimitado.
-
-As alterações deverão ser auditadas, justificadas e submetidas à reautenticação administrativa.
-
-### 2.2. Elegibilidade e situações excepcionais de estorno
-
-Uma transação somente será elegível quando:
-
-1. Estiver contabilizada e no estado `COMPLETED`.
-2. Pertencer a uma categoria explicitamente habilitada.
-3. Não possuir estorno anterior.
-4. Não for ela própria um estorno.
-5. Estiver dentro dos limites configurados.
-6. Não violar as regras de integridade financeira.
-7. Possuir dados suficientes para gerar a operação compensatória.
-8. Não estar sujeita a bloqueio operacional ou legal que impeça a reversão.
-
-O estorno será sempre integral na primeira versão.
-
-**Transferências:** a reversão deverá compensar os lançamentos originais. Se a conta que recebeu os recursos não possuir saldo suficiente para suportar a compensação, o estorno será recusado. Não haverá saldo negativo nem alteração dos lançamentos originais.
-
-**Depósitos e saques simulados:** a compensação utilizará as contas contábeis correspondentes.
-
-**Pagamentos simulados:** a compensação respeitará a conta de origem e a contrapartida contábil.
-
-**Compras simuladas com cartão:** a compensação deverá restaurar o saldo e o limite consumido, sem ultrapassar o limite original e respeitando o histórico do cartão.
-
-**Empréstimos:** desembolsos e pagamentos de parcelas não serão aceitos pelo endpoint genérico. Terão fluxos específicos, com regras próprias de correção.
-
-Uma falha de elegibilidade não poderá produzir lançamentos parciais.
-
-### 2.3. Schemas e contratos completos
-
-Os schemas serão centralizados em `components/schemas`, com:
-
-- Tipos explícitos.
-- Campos obrigatórios.
-- Restrições de tamanho e formato.
-- Enumerações de estados.
-- Valores monetários como strings decimais.
-- Datas em ISO 8601.
-- UUIDs.
-- Exemplos.
-- Respostas padronizadas.
-
-Os schemas de requisição não aceitarão propriedades desconhecidas em operações críticas (`additionalProperties: false`).
-
-### 2.4. Catálogo de erros
-
-Será utilizado um catálogo estável de códigos de erro, independente do texto apresentado ao usuário.
-
-O formato será compatível com Problem Details, incluindo `code`, `correlationId`, `timestamp` e, quando necessário, `errors`.
-
-### 2.5. Matriz de segurança por endpoint
-
-Cada operação terá uma política explícita de:
-
-- Autenticação.
-- Perfil permitido.
-- Titularidade ou escopo.
-- 2FA.
-- Reautenticação.
-- Justificativa.
-- Idempotência.
-
-A autorização será aplicada no backend. A documentação OpenAPI não substitui as verificações de domínio.
-
-### 2.6. Retenção e privacidade
-
-Os prazos de retenção não serão inventados nesta especificação.
-
-As políticas deverão ser configuráveis e documentadas conforme categoria de dado, finalidade, base legal e obrigação de retenção. Dados financeiros, Ledger e auditoria terão preservação histórica, respeitando as hipóteses legais de retenção e anonimização.
-
----
-
-# 3. Arquivo OpenAPI
-
-O conteúdo a seguir é a base formal da especificação. Os endpoints e schemas deverão ser mantidos em um único arquivo versionado, por exemplo:
-
-`docs/04-api/openapi.yaml` (materializado nesta etapa)
-
-```yaml
 openapi: 3.1.1
 
 info:
@@ -1856,9 +1735,9 @@ paths:
       description: |
         Operação exclusiva de ADMIN. Exige 2FA, reautenticação vinculada à ação,
         justificativa, confirmação, idempotência e auditoria. Preserva o payload
-        original e todas as tentativas anteriores. A solicitação é elegível para
-        estado terminal FAILED conforme a decisão complementar v1.1; há divergência
-        documental pendente com DEAD_LETTER na revisão da modelagem de dados.
+        original e todas as tentativas anteriores. Somente eventos elegíveis em estado
+        terminal FAILED podem ser reprocessados. DEAD_LETTER é encaminhamento ou
+        armazenamento operacional, não um estado alternativo nem critério de elegibilidade.
       parameters:
         - $ref: '#/components/parameters/EventId'
         - $ref: '#/components/parameters/IdempotencyKey'
@@ -4129,6 +4008,11 @@ components:
           format: uri-reference
           description: Caminho versionado para consultar estado e tentativas do evento.
 
+    OutboxEventStatus:
+      type: string
+      enum: [PENDING, PROCESSING, FAILED, PROCESSED]
+      description: FAILED é o estado terminal oficial de falha. DEAD_LETTER é encaminhamento/armazenamento operacional, não estado.
+
     OutboxEvent:
       type: object
       required: [eventId, status]
@@ -4136,8 +4020,7 @@ components:
         eventId:
           $ref: '#/components/schemas/UUID'
         status:
-          type: string
-          description: Estado da Outbox; enumeração depende da harmonização pendente entre FAILED e DEAD_LETTER.
+          $ref: '#/components/schemas/OutboxEventStatus'
         attempts:
           type: array
           description: Histórico preservado das tentativas de processamento.
@@ -4384,179 +4267,3 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PrivacyRequest'
-```
-
----
-
-# 4. Catálogo de erros de negócio
-
-A tabela abaixo complementa o enum `ErrorCode` da especificação.
-
-| Código | HTTP | Situação |
-|---|---:|---|
-| `VALIDATION_ERROR` | 400 | Dados inválidos |
-| `INVALID_CREDENTIALS` | 401 | Credenciais inválidas |
-| `TOKEN_EXPIRED` | 401 | Token expirado |
-| `TOKEN_REVOKED` | 401 | Token revogado |
-| `TOKEN_REUSE_DETECTED` | 401 | Reutilização de Refresh Token |
-| `MFA_REQUIRED` | 401 | Segundo fator necessário |
-| `MFA_INVALID` | 401 | Código TOTP inválido |
-| `MFA_CHALLENGE_EXPIRED` | 401 | Desafio expirado |
-| `REAUTHENTICATION_REQUIRED` | 401 | Reautenticação necessária |
-| `FORBIDDEN` | 403 | Acesso não autorizado |
-| `RESOURCE_NOT_FOUND` | 404 | Recurso inexistente ou não acessível |
-| `RESOURCE_STATE_CONFLICT` | 409 | Transição de estado inválida |
-| `IDEMPOTENCY_KEY_REUSED` | 409 | Chave utilizada com conteúdo diferente |
-| `CONCURRENT_MODIFICATION` | 409 | Conflito de concorrência |
-| `INSUFFICIENT_BALANCE` | 422 | Saldo insuficiente |
-| `ACCOUNT_NOT_ACTIVE` | 422 | Conta sem estado operacional |
-| `CUSTOMER_NOT_ACTIVE` | 422 | Cliente sem estado operacional |
-| `ACCOUNT_OWNERSHIP_REQUIRED` | 403 | Usuário não é titular autorizado |
-| `LOAN_INCOME_COMMITMENT_EXCEEDED` | 422 | Comprometimento de renda excedido |
-| `INSTALLMENT_ALREADY_PAID` | 409 | Parcela já quitada |
-| `PARTIAL_PAYMENT_NOT_SUPPORTED` | 422 | Pagamento parcial não suportado |
-| `CARD_LIMIT_EXCEEDED` | 422 | Limite de gasto excedido |
-| `REVERSAL_NOT_ELIGIBLE` | 422 | Transação não elegível para estorno |
-| `REVERSAL_ALREADY_EXISTS` | 409 | Estorno integral já realizado |
-| `REVERSAL_LIMIT_NOT_CONFIGURED` | 503 | Política obrigatória de estorno incompleta |
-| `REVERSAL_LIMIT_EXCEEDED` | 422 | Limite de estorno excedido |
-| `REVERSAL_INSUFFICIENT_FUNDS` | 422 | Compensação provocaria saldo negativo |
-| `ADMIN_REASON_REQUIRED` | 422 | Justificativa obrigatória ausente |
-| `LAST_ADMIN_PROTECTION` | 409 | Operação deixaria o sistema sem ADMIN ativo |
-| `RATE_LIMIT_EXCEEDED` | 429 | Limite de requisições excedido |
-| `INTERNAL_ERROR` | 500 | Erro interno |
-| `SERVICE_UNAVAILABLE` | 503 | Serviço indisponível |
-
-Observação: o código de erro deverá permanecer estável. O texto de `title` e `detail` poderá ser ajustado sem quebrar os consumidores.
-
-# 5. Matriz de segurança dos endpoints
-
-A matriz define o comportamento esperado. A autorização efetiva deverá ser implementada e testada no backend.
-
-| Grupo de endpoints | Perfil | Autenticação | Titularidade/escopo | 2FA | Reautenticação |
-|---|---|---|---|---|---|
-| Cadastro e login | Público | Não | Não | Conforme usuário | Não |
-| Desafio de login | Público com challenge | Challenge válido | Identidade do challenge | Sim | Não |
-| Refresh e logout | Sessão | Cookie de refresh | Própria sessão | Não | Não |
-| Perfil do cliente | CUSTOMER | Sim | Próprio cliente | Não | Para alterações sensíveis |
-| Contas | CUSTOMER | Sim | Titular ativo | Conforme risco | Encerramento e saída |
-| Convites de conta | CUSTOMER | Sim | Titular ativo ou destinatário | Conforme risco | Conforme risco |
-| Transferências | CUSTOMER | Sim | Titular ativo da origem | Conforme política de risco | Conforme política de risco |
-| Depósitos e saques | CUSTOMER | Sim | Titular ativo | Conforme política de risco | Conforme política de risco |
-| Pagamentos | CUSTOMER | Sim | Titular ativo | Conforme política de risco | Conforme política de risco |
-| Empréstimos do cliente | CUSTOMER | Sim | Próprio cliente | Conforme risco | Conforme risco |
-| Pagamento de parcelas | CUSTOMER | Sim | Próprio empréstimo | Conforme política de risco | Conforme política de risco |
-| Cartões | CUSTOMER | Sim | Próprio cartão e conta | Conforme política de risco | Conforme risco |
-| Estorno administrativo | ADMIN | Sim | Escopo administrativo | Obrigatório | Obrigatória |
-| Administração de clientes | ADMIN | Sim | Escopo administrativo | Obrigatório | Para ações críticas |
-| Administração de contas | ADMIN | Sim | Escopo administrativo | Obrigatório | Para ações críticas |
-| Administração de empréstimos | ADMIN | Sim | Escopo administrativo | Obrigatório | Aprovação/rejeição |
-| Administração de usuários ADMIN | ADMIN | Sim | Escopo administrativo | Obrigatório | Obrigatória |
-| Configurações críticas | ADMIN | Sim | Escopo administrativo | Obrigatório | Obrigatória |
-| Auditoria | ADMIN | Sim | Escopo administrativo | Obrigatório | Conforme criticidade |
-| Privacidade do cliente | CUSTOMER | Sim | Próprio titular | Conforme risco | Conforme solicitação |
-
-**Importante:** ADMIN não poderá alterar saldo diretamente. Qualquer efeito financeiro deverá passar pelos casos de uso e pelo Ledger.
-
-# 6. Regras transversais de contrato
-
-## 6.1. Valores monetários
-
-- Representação textual decimal com duas casas.
-- Sem notação científica.
-- Sem valores negativos em operações de crédito ou débito comuns.
-- Precisão compatível com `NUMERIC(19,2)`.
-- Backend converte e valida para `BigDecimal`.
-- Frontend não decide o saldo final.
-
-## 6.2. Idempotência
-
-Para operações financeiras:
-
-- Cabeçalho obrigatório `Idempotency-Key`.
-- Chave vinculada ao usuário e ao tipo de operação.
-- Requisição repetida com mesmo conteúdo retorna o resultado original.
-- Reutilização com conteúdo diferente resulta em HTTP 409.
-- Persistência do resultado idempotente na mesma fronteira transacional da operação.
-
-## 6.3. Processamento
-
-- Operações financeiras principais são síncronas.
-- HTTP 202 somente representa operação ainda pendente.
-- Agendamento criado com sucesso pode retornar HTTP 201.
-- Notificações e Outbox são assíncronas.
-- O backend nunca informa `COMPLETED` antes da contabilização.
-
-## 6.4. Extrato
-
-- Padrão: últimos 30 dias.
-- Máximo: 365 dias.
-- Datas inclusivas.
-- Fuso de interpretação: `America/Sao_Paulo`.
-- Página inicial zero.
-- Tamanho padrão 20, máximo 100.
-- Ordenação padrão `createdAt,desc`.
-- Datas, valores e campos de ordenação validados.
-
-## 6.5. Pagamento de parcelas
-
-- Somente integral.
-- Valor calculado pelo backend.
-- `PENDING` ou `OVERDUE` são estados elegíveis.
-- A parcela somente passa a `PAID` após contabilização.
-- Pagamento idempotente.
-- Liquidação simulada sem dependência de conta ativa.
-- Nenhum campo `amount` é aceito na requisição.
-
-## 6.6. Estornos
-
-- Integrais na primeira versão.
-- Uma reversão por transação original.
-- Apenas transações `COMPLETED`.
-- Sem estorno de estorno.
-- Sem saldo negativo.
-- Sem alteração de Ledger original.
-- Reautenticação, justificativa, confirmação, idempotência e auditoria.
-- Limites configuráveis e obrigatórios.
-- Empréstimos tratados em fluxos específicos.
-
-## 6.7. Estados
-
-A API não aceitará atualização direta de campos `status` por endpoints genéricos de edição.
-
-Transições ocorrerão por operações específicas e serão validadas no domínio.
-
----
-
-# 7. Critérios de validação da especificação
-
-Antes de aprovar a OpenAPI, deverão ser verificados:
-
-1. Validade sintática YAML.
-2. Compatibilidade com OpenAPI 3.1.1.
-3. Resolução de todas as referências `$ref`.
-4. Ausência de `operationId` duplicado.
-5. Ausência de parâmetros de caminho sem declaração.
-6. Schemas de requisição e resposta coerentes.
-7. Códigos HTTP compatíveis com os fluxos.
-8. Segurança definida por operação.
-9. Cookies e cabeçalhos documentados corretamente.
-10. Exemplos compatíveis com os respectivos schemas.
-11. Consistência com os contratos REST v1.1.
-12. Consistência com a especificação funcional.
-13. Consistência com o DER e dicionário de dados.
-14. Ausência de endpoints para operações fora de escopo.
-15. Ausência de operações administrativas que alterem saldo diretamente.
-
-# 8. Observações para revisão
-
-Esta proposta formaliza a estrutura e os principais contratos, mas há decisões de detalhamento que precisam de validação antes de se tornar a referência definitiva:
-
-- A política de segurança por endpoint deverá ser fechada individualmente, inclusive para operações de consulta sensível.
-- Os limites de estorno permanecerão sem números até serem definidos em configuração administrativa.
-- A semântica de `201`, `200` e `202` deverá ser confirmada em cada operação, especialmente em pagamentos e contratação de empréstimos.
-- A representação do segredo TOTP e dos códigos de recuperação deverá ser protegida para que dados de provisionamento sejam retornados somente no momento apropriado.
-- A lista de códigos de erro deverá ser comparada com todos os casos de uso para eliminar códigos ausentes ou redundantes.
-- A especificação completa deverá ser validada por ferramenta compatível com OpenAPI 3.1.1 antes da aprovação final.
-
-**Fim da proposta — MyBank OpenAPI 3.1.1**

@@ -1,15 +1,61 @@
 # MyBank — Revisão da Modelagem do Banco de Dados
+
+| Campo | Valor |
+| --- | --- |
+| Identificador | MB-DATA-REV |
+| Classe | Documento oficial da biblioteca MyBank |
+| Original preservado | [MyBank — Revisão da Modelagem do Banco de Dados.md](../99-fontes-originais/MyBank%20—%20Revisão%20da%20Modelagem%20do%20Banco%20de%20Dados.md) |
+
+## Sumário
+
+- [Complemento técnico à versão 1.0 do DER e Dicionário de Dados](#complemento-tecnico-a-versao-10-do-der-e-dicionario-de-dados)
+- [1. Separação entre usuário, cliente e conta](#1-separacao-entre-usuario-cliente-e-conta)
+- [1.1. Separação dos estados](#11-separacao-dos-estados)
+- [1.2. Alteração em `customer_profiles`](#12-alteracao-em-customerprofiles)
+- [1.3. Nova tabela `customer_status_history`](#13-nova-tabela-customerstatushistory)
+- [1.4. Nova tabela `bank_account_status_history`](#14-nova-tabela-bankaccountstatushistory)
+- [1.5. Transições de clientes](#15-transicoes-de-clientes)
+- [1.6. Transições de contas](#16-transicoes-de-contas)
+- [2. Estornos administrativos](#2-estornos-administrativos)
+- [2.1. Política da primeira versão](#21-politica-da-primeira-versao)
+- [2.2. Alteração em `transaction_reversals`](#22-alteracao-em-transactionreversals)
+- [2.3. Regras de elegibilidade](#23-regras-de-elegibilidade)
+- [2.4. Limites administrativos](#24-limites-administrativos)
+- [3. Pagamento de empréstimos após encerramento de conta](#3-pagamento-de-emprestimos-apos-encerramento-de-conta)
+- [3.1. Regra arquitetural](#31-regra-arquitetural)
+- [3.2. Nova tabela `loan_installment_payments`](#32-nova-tabela-loaninstallmentpayments)
+- [3.3. Regras de pagamento](#33-regras-de-pagamento)
+- [3.4. Contabilização](#34-contabilizacao)
+- [4. Transactional Outbox — Falhas e reprocessamento](#4-transactional-outbox-falhas-e-reprocessamento)
+- [4.1. Estados revisados de `outbox_events`](#41-estados-revisados-de-outboxevents)
+- [4.2. Estrutura revisada de `outbox_events`](#42-estrutura-revisada-de-outboxevents)
+- [4.3. Política de tentativas](#43-politica-de-tentativas)
+- [4.4. Nova tabela `outbox_event_attempts`](#44-nova-tabela-outboxeventattempts)
+- [4.5. Recuperação de processamento interrompido](#45-recuperacao-de-processamento-interrompido)
+- [4.6. Reprocessamento administrativo](#46-reprocessamento-administrativo)
+- [5. Ajustes complementares ao DER](#5-ajustes-complementares-ao-der)
+- [5.1. Cardinalidade de provedores de pagamento](#51-cardinalidade-de-provedores-de-pagamento)
+- [5.2. Histórico de estados](#52-historico-de-estados)
+- [5.3. Empréstimos e pagamentos](#53-emprestimos-e-pagamentos)
+- [5.4. Estornos](#54-estornos)
+- [6. Ajustes nas restrições e índices](#6-ajustes-nas-restricoes-e-indices)
+- [7. Atualização da organização por módulos](#7-atualizacao-da-organizacao-por-modulos)
+- [8. Atualização das migrações Flyway](#8-atualizacao-das-migracoes-flyway)
+- [9. Pontos que permanecem para validação](#9-pontos-que-permanecem-para-validacao)
+- [10. Critérios de aceite complementares](#10-criterios-de-aceite-complementares)
+- [11. Pendências de consolidação do DER e do dicionário](#11-pendencias-de-consolidacao-do-der-e-do-dicionario)
+
 ## Complemento técnico à versão 1.0 do DER e Dicionário de Dados
 
-**Versão:** 1.1 — Proposta de revisão  
-**Banco de dados:** PostgreSQL  
+**Versão:** 1.1 — Proposta de revisão
+**Banco de dados:** PostgreSQL
 **Referência:** Documento de Modelagem do Banco de Dados — versão 1.0
 
 Este documento complementa a versão 1.0. Todas as entidades, campos e regras não mencionados aqui permanecem conforme a versão original. As alterações abaixo devem ser incorporadas ao DER e ao dicionário de dados antes da aprovação definitiva da modelagem.
 
 ---
 
-# 1. Separação entre usuário, cliente e conta
+## 1. Separação entre usuário, cliente e conta
 
 ## 1.1. Separação dos estados
 
@@ -18,7 +64,7 @@ O estado de autenticação do usuário não deve ser confundido com a situação
 Serão três controles independentes:
 
 | Entidade | Responsabilidade |
-|---|---|
+| --- | --- |
 | `users.status` | Controlar a situação das credenciais e do acesso ao sistema. |
 | `customer_profiles.status` | Controlar a situação cadastral e operacional do cliente. |
 | `bank_accounts.status` | Controlar a situação operacional da conta bancária. |
@@ -32,7 +78,7 @@ Um usuário com credenciais ativas não poderá realizar operações financeiras
 Adicionar o campo:
 
 | Campo | Tipo | Regras |
-|---|---|---|
+| --- | --- | --- |
 | `status` | VARCHAR(20) | NN, estado cadastral do cliente |
 
 Estados propostos:
@@ -50,7 +96,7 @@ A situação `CLOSED` não elimina o histórico financeiro nem as obrigações e
 Registra alterações no estado cadastral do cliente.
 
 | Campo | Tipo | Regras |
-|---|---|---|
+| --- | --- | --- |
 | `id` | UUID | PK, NN |
 | `customer_id` | UUID | FK → `customer_profiles.id`, NN |
 | `previous_status` | VARCHAR(20) | NULL na criação |
@@ -71,7 +117,7 @@ Regras:
 Registra alterações no estado das contas.
 
 | Campo | Tipo | Regras |
-|---|---|---|
+| --- | --- | --- |
 | `id` | UUID | PK, NN |
 | `account_id` | UUID | FK → `bank_accounts.id`, NN |
 | `previous_status` | VARCHAR(20) | NULL na criação |
@@ -120,7 +166,7 @@ Empréstimos vinculados ao cliente não impedem automaticamente o encerramento d
 
 ---
 
-# 2. Estornos administrativos
+## 2. Estornos administrativos
 
 ## 2.1. Política da primeira versão
 
@@ -135,7 +181,7 @@ O estorno deverá gerar uma nova transação e novos lançamentos contábeis com
 Estrutura revisada:
 
 | Campo | Tipo | Regras |
-|---|---|---|
+| --- | --- | --- |
 | `id` | UUID | PK, NN |
 | `original_transaction_id` | UUID | FK → `transactions.id`, NN, UK |
 | `reversal_transaction_id` | UUID | FK → `transactions.id`, NN, UK |
@@ -176,7 +222,7 @@ A definição de procedimentos específicos para correção de pagamentos de par
 
 ---
 
-# 3. Pagamento de empréstimos após encerramento de conta
+## 3. Pagamento de empréstimos após encerramento de conta
 
 ## 3.1. Regra arquitetural
 
@@ -191,7 +237,7 @@ Na primeira versão, será utilizado um mecanismo de pagamento inteiramente simu
 Registra pagamentos simulados de parcelas.
 
 | Campo | Tipo | Regras |
-|---|---|---|
+| --- | --- | --- |
 | `id` | UUID | PK, NN |
 | `loan_installment_id` | UUID | FK → `loan_installments.id`, NN |
 | `transaction_id` | UUID | FK → `transactions.id`, NN, UK |
@@ -230,7 +276,7 @@ O pagamento deverá utilizar contas contábeis próprias de liquidação simulad
 Exemplo conceitual:
 
 | Conta contábil | Direção | Valor |
-|---|---|---:|
+| --- | --- | ---: |
 | Conta de compensação de recebimentos | DEBIT | Valor recebido |
 | Conta de obrigação/recebimento do empréstimo | CREDIT | Valor recebido |
 
@@ -240,23 +286,23 @@ O encerramento da conta bancária não poderá apagar ou cancelar parcelas ainda
 
 ---
 
-# 4. Transactional Outbox — Falhas e reprocessamento
+## 4. Transactional Outbox — Falhas e reprocessamento
 
 ## 4.1. Estados revisados de `outbox_events`
 
-Substituir os estados anteriores por:
+A máquina de estados oficial da Outbox é:
 
 - `PENDING`
 - `PROCESSING`
-- `PROCESSED`
-- `DEAD_LETTER`
+- `FAILED` — estado terminal para falha após esgotamento das tentativas ou classificação definitiva.
+- `PROCESSED` — processamento concluído com sucesso.
 
-O estado `FAILED` não será utilizado como estado terminal. Uma falha recuperável continuará no ciclo de tentativas; uma falha que esgotar as tentativas será encaminhada para `DEAD_LETTER`.
+`DEAD_LETTER` não é estado. É o encaminhamento ou armazenamento operacional de eventos cujo processamento esgotou as tentativas; esses eventos permanecem com estado `FAILED`.
 
 ## 4.2. Estrutura revisada de `outbox_events`
 
 | Campo | Tipo | Regras |
-|---|---|---|
+| --- | --- | --- |
 | `id` | UUID | PK, NN |
 | `aggregate_type` | VARCHAR(80) | NN |
 | `aggregate_id` | UUID | NN |
@@ -273,7 +319,7 @@ O estado `FAILED` não será utilizado como estado terminal. Uma falha recuperá
 | `locked_at` | TIMESTAMPTZ | NULL |
 | `locked_until` | TIMESTAMPTZ | NULL |
 | `worker_id` | VARCHAR(100) | NULL |
-| `dead_lettered_at` | TIMESTAMPTZ | NULL |
+| `dead_lettered_at` | TIMESTAMPTZ | NULL, instante do encaminhamento/armazenamento operacional; não representa estado |
 | `last_error` | TEXT | NULL |
 
 ## 4.3. Política de tentativas
@@ -283,8 +329,8 @@ O estado `FAILED` não será utilizado como estado terminal. Uma falha recuperá
 - O agendamento será armazenado em `next_attempt_at`.
 - O processamento deverá ser idempotente.
 - Falhas temporárias poderão ser tentadas novamente.
-- Falhas definitivas poderão ser encaminhadas diretamente para `DEAD_LETTER`, conforme classificação técnica.
-- Ao esgotar as tentativas, o evento será marcado como `DEAD_LETTER`.
+- Falhas definitivas poderão receber estado `FAILED` e ser encaminhadas ao armazenamento operacional dead-letter, conforme classificação técnica.
+- Ao esgotar as tentativas, o evento receberá estado `FAILED`; seu encaminhamento operacional não altera o estado persistido.
 - O histórico de tentativas deverá ser preservado.
 
 A duração exata dos intervalos de espera será definida na configuração técnica da implementação, sem alterar o limite de cinco tentativas aprovado.
@@ -294,7 +340,7 @@ A duração exata dos intervalos de espera será definida na configuração téc
 Registra individualmente cada tentativa de processamento.
 
 | Campo | Tipo | Regras |
-|---|---|---|
+| --- | --- | --- |
 | `id` | UUID | PK, NN |
 | `outbox_event_id` | UUID | FK → `outbox_events.id`, NN |
 | `processing_cycle` | INTEGER | NN |
@@ -324,7 +370,7 @@ A idempotência do consumidor é obrigatória, pois a entrega de eventos poderá
 
 ## 4.6. Reprocessamento administrativo
 
-Eventos em `DEAD_LETTER` poderão ser reprocessados por ADMIN autorizado.
+Somente eventos elegíveis com estado `FAILED` poderão ser reprocessados por ADMIN autorizado. O encaminhamento ou armazenamento dead-letter, por si só, não torna um evento elegível.
 
 O reprocessamento deverá:
 
@@ -342,7 +388,7 @@ Não haverá edição manual de payload ou alteração direta de registros pelo 
 
 ---
 
-# 5. Ajustes complementares ao DER
+## 5. Ajustes complementares ao DER
 
 ## 5.1. Cardinalidade de provedores de pagamento
 
@@ -386,12 +432,12 @@ O relacionamento entre `transactions` e `transaction_reversals` deverá represen
 
 ---
 
-# 6. Ajustes nas restrições e índices
+## 6. Ajustes nas restrições e índices
 
 Adicionar às restrições:
 
 | Entidade | Restrição |
-|---|---|
+| --- | --- |
 | `customer_profiles` | Estado cadastral obrigatório e controlado |
 | `bank_accounts` | Estado operacional obrigatório e controlado |
 | `customer_status_history` | Histórico associado a cliente existente |
@@ -407,7 +453,7 @@ Adicionar às restrições:
 Índices adicionais:
 
 | Tabela | Índice |
-|---|---|
+| --- | --- |
 | `customer_profiles` | Estado cadastral |
 | `customer_status_history` | Cliente e data |
 | `bank_account_status_history` | Conta e data |
@@ -419,10 +465,10 @@ Adicionar às restrições:
 
 ---
 
-# 7. Atualização da organização por módulos
+## 7. Atualização da organização por módulos
 
 | Módulo | Novas entidades ou alterações |
-|---|---|
+| --- | --- |
 | Identity | Sem alteração estrutural obrigatória |
 | Customer | `customer_profiles.status`, `customer_status_history` |
 | Account | `bank_account_status_history` |
@@ -435,14 +481,14 @@ As novas tabelas deverão ser incluídas no DER, dicionário de dados, migraçõ
 
 ---
 
-# 8. Atualização das migrações Flyway
+## 8. Atualização das migrações Flyway
 
 A sequência V001–V016 da versão 1.0 permanece como proposta inicial, mas deverá ser ajustada para contemplar as novas entidades e dependências.
 
 Migrações adicionais propostas:
 
 | Migração | Conteúdo |
-|---|---|
+| --- | --- |
 | V017 | Histórico de estados de clientes e contas |
 | V018 | Estrutura de pagamentos de parcelas de empréstimos |
 | V019 | Histórico de tentativas da Outbox |
@@ -454,7 +500,7 @@ A numeração definitiva deverá ser ajustada após a organização das dependê
 
 ---
 
-# 9. Pontos que permanecem para validação
+## 9. Pontos que permanecem para validação
 
 As quatro propostas aprovadas foram incorporadas. Os pontos abaixo são complementares e ainda não devem ser tratados como decisões definitivas:
 
@@ -467,7 +513,7 @@ As quatro propostas aprovadas foram incorporadas. Os pontos abaixo são compleme
 
 ---
 
-# 10. Critérios de aceite complementares
+## 10. Critérios de aceite complementares
 
 - [ ] Estado de usuário separado do estado cadastral do cliente.
 - [ ] Estado de cliente separado do estado da conta bancária.
@@ -480,7 +526,7 @@ As quatro propostas aprovadas foram incorporadas. Os pontos abaixo são compleme
 - [ ] Pagamentos de parcelas geram contabilização própria.
 - [ ] Eventos possuem histórico individual de tentativas.
 - [ ] Cinco tentativas por ciclo.
-- [ ] Eventos esgotados são encaminhados a `DEAD_LETTER`.
+- [ ] Eventos esgotados possuem estado `FAILED` e podem ser encaminhados ao armazenamento operacional dead-letter.
 - [ ] Processamentos interrompidos podem ser recuperados.
 - [ ] Reprocessamentos administrativos são auditados.
 - [ ] Consumidores possuem idempotência.
@@ -494,10 +540,10 @@ As quatro propostas aprovadas foram incorporadas. Os pontos abaixo são compleme
 
 Nenhuma implementação funcional está autorizada por este documento.
 
-# 8. Pendências de consolidação do DER e do dicionário
+## 11. Pendências de consolidação do DER e do dicionário
 
 A consolidação complementar aprovada exige CPF protegido por AES-256-GCM, HMAC-SHA-256 independente e metadados de versionamento necessários à rotação. Exige também a representação persistida do snapshot contratual imutável dos empréstimos e a preservação do histórico individual de tentativas da Outbox.
 
-O DER e o dicionário de dados versão 1.0 referenciados no início deste documento não estão presentes no repositório. Por isso, este complemento não inventa nomes de colunas, tipos, restrições ou relacionamentos para CPF e snapshot. Esses elementos precisam ser incorporados e revisados no artefato de DER/dicionário antes de considerar a modelagem consolidada.
+O DER e o dicionário de dados versão 1.0 referenciados no início deste documento não estão presentes no repositório. Solicita-se o fornecimento dos documentos originais aprovados para concluir a auditoria. Até que estejam disponíveis, este complemento não inventa nem reconstrói nomes de colunas, tipos, restrições ou relacionamentos para CPF e snapshot. Esses elementos precisam ser conferidos e incorporados aos artefatos-base antes de considerar a modelagem consolidada.
 
-**Divergência não resolvida:** a decisão complementar v1.1 permite reprocessamento a partir de `FAILED` terminal; esta revisão define `DEAD_LETTER` como estado após esgotar tentativas e permite reprocessamento nesse estado. A máquina de estados, a elegibilidade e a terminologia persistida precisam de decisão explícita. As tentativas anteriores devem ser preservadas em qualquer alternativa.
+**Harmonização após revisão:** `FAILED` é o estado terminal oficial e o único estado terminal elegível para reprocessamento, sujeito aos demais critérios. `DEAD_LETTER` designa somente o encaminhamento ou armazenamento operacional de eventos esgotados e não aparece como estado alternativo. O DER e o dicionário de dados originais continuam ausentes; a revisão de seus campos e metadados permanece pendente até que os documentos-base aprovados sejam disponibilizados.
