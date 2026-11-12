@@ -1115,3 +1115,11 @@ A implementação deverá seguir a arquitetura definida para o projeto, os contr
 O desenvolvimento será realizado em etapas pequenas e aprovadas individualmente. Nenhuma etapa posterior poderá ser iniciada sem autorização explícita do usuário.
 
 **Fim da especificação frontend.**
+
+# Complemento aprovado — CPF e reprocessamento da Outbox
+
+O frontend não solicita nem exibe CPF em áreas que não precisem dele e não apresenta CPF, ciphertext ou HMAC em logs de interface.
+
+Na área administrativa da Outbox, a interface pode mostrar o estado, as tentativas e o erro operacional autorizado para consulta. O comando de reprocessamento exige justificativa, confirmação adicional e reautenticação segundo os contratos da API. Após `202 Accepted`, a interface acompanha o resultado pela `statusUrl` recebida, sem inferir sucesso final a partir da aceitação. O histórico de tentativas não pode ser apagado nem editado pelo frontend.
+
+A disponibilidade do comando depende da elegibilidade definida pelo backend. A divergência documental entre os estados terminais `FAILED` e `DEAD_LETTER` permanece pendente.

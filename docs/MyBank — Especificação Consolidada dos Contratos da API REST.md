@@ -1419,3 +1419,15 @@ A especificação será considerada concluída quando:
 ---
 
 **Fim do documento — MyBank API REST v1.1**
+
+# Complemento aprovado — reprocessamento administrativo da Outbox
+
+## Endpoint
+
+`POST /api/v1/admin/outbox-events/{eventId}/reprocess`
+
+O comando é exclusivo de ADMIN e exige autenticação, 2FA, `X-Reauthentication-Token`, justificativa, confirmação adicional, `Idempotency-Key` e auditoria. O corpo contém `reason` (10 a 500 caracteres) e `confirmation: true`. A confirmação é incluída porque a decisão complementar exige confirmação adicional, embora seu exemplo de corpo v1.1 mostre somente `reason`; essa diferença do exemplo fica registrada para revisão.
+
+A solicitação elegível retorna `202 Accepted`, com `eventId`, estado inicial `PENDING`, mensagem e `statusUrl` apontando para `/api/v1/admin/outbox-events/{eventId}`. O recurso de consulta é protegido para ADMIN e apresenta o estado e o histórico de tentativas conforme a política de acesso. A aceitação não apaga tentativas anteriores nem altera o conteúdo original do evento.
+
+O estado terminal elegível está inconsistente entre documentos (`FAILED` na decisão complementar v1.1 e `DEAD_LETTER` na revisão de modelagem). A API não deve tratar essa divergência como resolvida até decisão explícita.

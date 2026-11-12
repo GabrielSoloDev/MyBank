@@ -702,3 +702,9 @@ O frontend não será autoridade sobre regras financeiras, autorização ou segu
 4. Novas decisões devem apresentar contexto, alternativas, justificativa e consequências.
 5. O usuário deve aprovar mudanças relevantes antes da adoção.
 6. Os documentos técnicos devem permanecer consistentes com os ADRs aceitos.
+
+## Registro complementar — decisões aprovadas na consolidação técnica v1.1
+
+O documento [MyBank — Consolidação das Decisões Técnicas Complementares](MyBank%20%E2%80%94%20Consolida%C3%A7%C3%A3o%20das%20Decis%C3%B5es%20T%C3%A9cnicas%20Complementares.md), versão 1.1, é a fonte aprovada para CPF e sua proteção, snapshot contratual de empréstimos, estornos administrativos e reprocessamento da Outbox. Este registro serve à rastreabilidade e não altera o status geral deste catálogo nem resolve divergências ainda pendentes.
+
+As decisões devem ser refletidas nos documentos de requisitos, arquitetura, dados, contratos REST, OpenAPI e frontend. A divergência entre `FAILED` e `DEAD_LETTER` para o estado terminal da Outbox permanece pendente de decisão.

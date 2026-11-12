@@ -493,3 +493,11 @@ As quatro propostas aprovadas foram incorporadas. Os pontos abaixo são compleme
 **Próxima etapa:** incorporar os ajustes aprovados ao documento principal e validar o DER completo, suas cardinalidades, restrições e dicionário de dados antes de iniciar a documentação dos contratos REST.
 
 Nenhuma implementação funcional está autorizada por este documento.
+
+# 8. Pendências de consolidação do DER e do dicionário
+
+A consolidação complementar aprovada exige CPF protegido por AES-256-GCM, HMAC-SHA-256 independente e metadados de versionamento necessários à rotação. Exige também a representação persistida do snapshot contratual imutável dos empréstimos e a preservação do histórico individual de tentativas da Outbox.
+
+O DER e o dicionário de dados versão 1.0 referenciados no início deste documento não estão presentes no repositório. Por isso, este complemento não inventa nomes de colunas, tipos, restrições ou relacionamentos para CPF e snapshot. Esses elementos precisam ser incorporados e revisados no artefato de DER/dicionário antes de considerar a modelagem consolidada.
+
+**Divergência não resolvida:** a decisão complementar v1.1 permite reprocessamento a partir de `FAILED` terminal; esta revisão define `DEAD_LETTER` como estado após esgotar tentativas e permite reprocessamento nesse estado. A máquina de estados, a elegibilidade e a terminologia persistida precisam de decisão explícita. As tentativas anteriores devem ser preservadas em qualquer alternativa.

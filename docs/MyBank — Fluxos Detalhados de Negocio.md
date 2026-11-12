@@ -801,3 +801,12 @@ Após a aprovação dos fluxos, a próxima etapa será revisar os parâmetros op
 Somente depois do fechamento dessas definições será adequado preparar o prompt mestre definitivo para o Codex.
 
 **Status final:** proposta apresentada para revisão. Nenhuma implementação autorizada nesta etapa.
+
+# Complemento aprovado — reprocessamento administrativo da Outbox
+
+1. ADMIN autenticado com 2FA solicita reautenticação vinculada a `OUTBOX_EVENT_REPROCESSING`.
+2. A interface envia o identificador do evento, a justificativa, a confirmação adicional e a chave de idempotência ao endpoint documentado.
+3. O backend verifica autorização, reautenticação, justificativa, confirmação, estado elegível, ausência de execução incompatível e idempotência.
+4. A solicitação e o ator são auditados; as tentativas anteriores e o payload original permanecem preservados.
+5. Uma solicitação aceita retorna `202 Accepted` e `statusUrl`; o frontend consulta o recurso até obter o estado de processamento disponível.
+6. A política de estado terminal permanece pendente de harmonização entre `FAILED` e `DEAD_LETTER`.

@@ -2,7 +2,7 @@
 
 **Versão da API:** 1.1  
 **Versão OpenAPI:** 3.1.1  
-**Status:** Proposta para revisão  
+**Status:** Proposta para revisão — consolidação documental em auditoria
 **Formato:** YAML  
 **Base path:** `/api/v1`  
 **Formato de dados:** JSON / UTF-8  
@@ -116,7 +116,7 @@ As políticas deverão ser configuráveis e documentadas conforme categoria de d
 
 O conteúdo a seguir é a base formal da especificação. Os endpoints e schemas deverão ser mantidos em um único arquivo versionado, por exemplo:
 
-`docs/04-api/openapi.yaml`
+`docs/04-api/openapi.yaml` (materializado nesta etapa)
 
 ```yaml
 openapi: 3.1.1
@@ -1847,6 +1847,77 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/BusinessRuleError'
+
+  /admin/outbox-events/{eventId}/reprocess:
+    post:
+      tags: [Administration]
+      operationId: reprocessOutboxEvent
+      summary: Solicitar reprocessamento administrativo de evento da Outbox
+      description: |
+        Operação exclusiva de ADMIN. Exige 2FA, reautenticação vinculada à ação,
+        justificativa, confirmação, idempotência e auditoria. Preserva o payload
+        original e todas as tentativas anteriores. A solicitação é elegível para
+        estado terminal FAILED conforme a decisão complementar v1.1; há divergência
+        documental pendente com DEAD_LETTER na revisão da modelagem de dados.
+      parameters:
+        - $ref: '#/components/parameters/EventId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/ReauthenticationToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OutboxReprocessRequest'
+            example:
+              reason: Reprocessamento após correção da causa operacional
+              confirmation: true
+      responses:
+        '202':
+          description: Solicitação aceita para processamento assíncrono.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutboxReprocessAcceptedResponse'
+              example:
+                eventId: 4b8d6b6d-3e0e-4f9e-8e7e-8f2a4e9a1234
+                status: PENDING
+                message: Reprocessamento solicitado.
+                statusUrl: /api/v1/admin/outbox-events/4b8d6b6d-3e0e-4f9e-8e7e-8f2a4e9a1234
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/BusinessRuleError'
+
+  /admin/outbox-events/{eventId}:
+    get:
+      tags: [Administration]
+      operationId: getOutboxEventStatus
+      summary: Consultar estado e tentativas de evento da Outbox
+      description: Consulta administrativa para acompanhamento por `statusUrl`.
+      parameters:
+        - $ref: '#/components/parameters/EventId'
+      responses:
+        '200':
+          description: Estado atual e histórico de tentativas permitido para consulta.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutboxEventResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /admin/customers:
     get:
@@ -4027,6 +4098,62 @@ components:
           $ref: '#/components/schemas/Reversal'
 
     # ----- Administration -----
+
+    OutboxReprocessRequest:
+      type: object
+      additionalProperties: false
+      required: [reason, confirmation]
+      properties:
+        reason:
+          type: string
+          minLength: 10
+          maxLength: 500
+        confirmation:
+          type: boolean
+          const: true
+
+    OutboxReprocessAcceptedResponse:
+      type: object
+      additionalProperties: false
+      required: [eventId, status, message, statusUrl]
+      properties:
+        eventId:
+          $ref: '#/components/schemas/UUID'
+        status:
+          type: string
+          const: PENDING
+        message:
+          type: string
+        statusUrl:
+          type: string
+          format: uri-reference
+          description: Caminho versionado para consultar estado e tentativas do evento.
+
+    OutboxEvent:
+      type: object
+      required: [eventId, status]
+      properties:
+        eventId:
+          $ref: '#/components/schemas/UUID'
+        status:
+          type: string
+          description: Estado da Outbox; enumeração depende da harmonização pendente entre FAILED e DEAD_LETTER.
+        attempts:
+          type: array
+          description: Histórico preservado das tentativas de processamento.
+          items:
+            type: object
+            additionalProperties: true
+        lastError:
+          type: string
+          description: Erro operacional apresentado conforme política de acesso e redação de dados sensíveis.
+
+    OutboxEventResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/OutboxEvent'
 
     AdminReasonRequest:
       type: object

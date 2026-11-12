@@ -613,3 +613,9 @@ Os diagramas representam a arquitetura aprovada em nível conceitual. Antes da i
 - Estratégia de exposição e configuração dos serviços por ambiente.
 
 Esses detalhes deverão ser documentados sem contradizer as decisões já aprovadas.
+
+# Complemento aprovado — proteção de CPF e reprocessamento da Outbox
+
+O módulo responsável por dados de clientes deverá aplicar AES-256-GCM ao CPF armazenado e HMAC-SHA-256 independente para pesquisa e unicidade. As chaves permanecem fora do banco e do código-fonte; versões de chave e rotação devem preservar a capacidade de localizar e verificar registros existentes. Logs não podem conter CPF, ciphertext ou HMAC do CPF.
+
+A Outbox mantém o conteúdo original e o histórico das tentativas. O reprocessamento é uma operação administrativa rastreável, com verificação de autorização, 2FA, reautenticação, justificativa, confirmação, idempotência e concorrência. O endpoint de entrada é `POST /api/v1/admin/outbox-events/{eventId}/reprocess`; a aceitação é assíncrona (`202 Accepted`) e devolve `statusUrl` para consulta. A máquina de estados terminal segue pendente de harmonização entre `FAILED` e `DEAD_LETTER`.

@@ -1002,3 +1002,13 @@ Toda alteração relevante deverá:
 5. Avaliar impactos nos contratos da API.
 6. Atualizar os testes e documentos correspondentes.
 7. Receber aprovação do usuário antes da implementação.
+
+# Complemento aprovado — identificação, contratos e operações administrativas
+
+Conforme a consolidação técnica complementar v1.1:
+
+- CPF é obrigatório, validado quanto a formato e dígitos verificadores, e é o único documento de identificação aceito na primeira versão. A unicidade deve ser protegida sem expor o CPF.
+- As condições efetivamente aprovadas de cada empréstimo contratado formam snapshot imutável, preservado após quitação e independente de alterações futuras das configurações.
+- Estornos administrativos são integrais, exclusivos de ADMIN, com 2FA, reautenticação, justificativa, confirmação, auditoria, idempotência e limites configuráveis. A correção ocorre por lançamentos compensatórios; lançamentos originais do Ledger não são alterados.
+- Reprocessamentos administrativos da Outbox preservam o histórico de tentativas, não modificam o payload original, e são idempotentes, auditados e protegidos contra concorrência.
+- O estado terminal elegível aparece como `FAILED` na decisão complementar v1.1. A revisão de modelagem descreve `DEAD_LETTER`; esta divergência está pendente e não é resolvida por este complemento.
