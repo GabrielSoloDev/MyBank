@@ -294,10 +294,10 @@ A máquina de estados oficial da Outbox é:
 
 - `PENDING`
 - `PROCESSING`
-- `FAILED` — estado terminal para falha após esgotamento das tentativas ou classificação definitiva.
 - `PROCESSED` — processamento concluído com sucesso.
+- `FAILED` — estado terminal de falha, elegível a reprocessamento manual somente após as validações de elegibilidade e autorizações aprovadas.
 
-`DEAD_LETTER` não é estado. É o encaminhamento ou armazenamento operacional de eventos cujo processamento esgotou as tentativas; esses eventos permanecem com estado `FAILED`.
+`DEAD_LETTER` não é um estado alternativo do domínio. É o mecanismo operacional de encaminhamento ou armazenamento de eventos com falha; o estado do evento permanece `FAILED`.
 
 ## 4.2. Estrutura revisada de `outbox_events`
 
@@ -546,4 +546,4 @@ A consolidação complementar aprovada exige CPF protegido por AES-256-GCM, HMAC
 
 O DER e o dicionário de dados versão 1.0 referenciados no início deste documento não estão presentes no repositório. Solicita-se o fornecimento dos documentos originais aprovados para concluir a auditoria. Até que estejam disponíveis, este complemento não inventa nem reconstrói nomes de colunas, tipos, restrições ou relacionamentos para CPF e snapshot. Esses elementos precisam ser conferidos e incorporados aos artefatos-base antes de considerar a modelagem consolidada.
 
-**Harmonização após revisão:** `FAILED` é o estado terminal oficial e o único estado terminal elegível para reprocessamento, sujeito aos demais critérios. `DEAD_LETTER` designa somente o encaminhamento ou armazenamento operacional de eventos esgotados e não aparece como estado alternativo. O DER e o dicionário de dados originais continuam ausentes; a revisão de seus campos e metadados permanece pendente até que os documentos-base aprovados sejam disponibilizados.
+**Harmonização após revisão:** `PROCESSED` representa processamento concluído com sucesso. `FAILED` é o estado terminal de falha e pode ser elegível a reprocessamento manual somente após validação dos demais critérios e autorizações. `DEAD_LETTER` designa somente o mecanismo operacional de encaminhamento ou armazenamento de eventos com falha, sem constituir estado alternativo. O DER e o dicionário de dados originais continuam ausentes; a revisão de seus campos e metadados permanece pendente até que os documentos-base aprovados sejam disponibilizados.

@@ -32,7 +32,7 @@
 | MB-DATA | [`04-dados/README.md`](../04-dados/README.md) | Modelo de dados e pendências | DER e dicionário ausentes; não consolidado. |
 | MB-DB-REV | [`04-dados/revisao-modelagem-e-pendencias.md`](../04-dados/revisao-modelagem-e-pendencias.md) | Revisão complementar de dados | Proposta de revisão, não substitui o DER/dicionário. |
 | MB-API-REST | [`05-api/contratos-rest.md`](../05-api/contratos-rest.md) | Contratos REST | Proposta consolidada para revisão. |
-| MB-API-OAS | [`05-api/openapi.yaml`](../05-api/openapi.yaml) | Contrato OpenAPI | OpenAPI 3.1.1; validação estrutural integral pendente. |
+| MB-API-OAS | [`05-api/openapi.yaml`](../05-api/openapi.yaml) | Contrato OpenAPI | OpenAPI 3.1.1; validação estrutural concluída com Redocly CLI 2.73.0: 0 erros, 50 avisos e 0 ignorados. Avisos de qualidade e pendências semânticas/documentais permanecem em análise. |
 | MB-API-GUIDE | [`05-api/openapi.md`](../05-api/openapi.md) | Orientação da especificação OpenAPI | Índice para a única fonte YAML. |
 | MB-FLOW | [`06-fluxos/fluxos-de-negocio.md`](../06-fluxos/fluxos-de-negocio.md) | Fluxos de negócio | Proposta para revisão. |
 | MB-FE | [`07-frontend/especificacao-frontend.md`](../07-frontend/especificacao-frontend.md) | Especificação do frontend | Referência para desenvolvimento; decisões preservadas. |
@@ -46,6 +46,6 @@ Os documentos originais foram movidos, sem alteração de conteúdo, para [`99-f
 ## Pendências e gate de aprovação
 
 - Receber e auditar o DER e o dicionário de dados originais aprovados.
-- Executar validação OpenAPI integral com ferramenta compatível já disponível ou autorizada.
+- Revisar os 50 avisos Redocly e as pendências semânticas/documentais registradas no relatório, sem considerar a validação estrutural como aprovação integral do contrato.
 - Revisar o relatório completo e aprovar a biblioteca documental.
 - A Etapa 9 permanece aguardando aprovação; a Etapa 10 e a implementação funcional não estão autorizadas por esta organização documental.
