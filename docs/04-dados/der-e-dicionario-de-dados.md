@@ -5,7 +5,7 @@
 | Identificador | MB-DATA-001 |
 | Classe | Documento oficial da biblioteca MyBank |
 | Versão | 1.1 — Consolidação documental |
-| Estado | Versão 1.1 aprovada; resolução documental das pendências desta etapa aguarda aprovação humana |
+| Estado | Versão 1.1 aprovada no escopo lógico; pendências físicas e operacionais registradas para etapas futuras |
 | Banco | PostgreSQL |
 | Origem preservada | [Documento de modelagem v1.0 — proposta para revisão](../99-fontes-originais/MyBank%20—%20Documento%20de%20Modelagem%20do%20Banco%20de%20Dados.md) |
 | Complemento | [Revisão da modelagem e pendências](revisao-modelagem-e-pendencias.md), proposta usada somente quando confirmada por decisões posteriores |

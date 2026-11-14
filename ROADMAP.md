@@ -125,7 +125,7 @@ Critérios de aceite:
 - Consistência financeira demonstrada nos diagramas.
 
 ### Etapa 6 — DER e dicionário de dados
-**Estado:** APROVADA EM CONVERSA
+**Estado:** APROVADA — documentação lógica v1.1
 
 Entregável:
 - Documento único contendo DER e dicionário de dados.
@@ -146,6 +146,8 @@ Critérios de aceite:
 - Regras financeiras preservadas.
 - Integridade referencial definida.
 - Compatibilidade com PostgreSQL e Flyway.
+
+A aprovação cobre o modelo lógico e a documentação v1.1. Permanecem para etapas futuras, sem autorização de implementação nesta aprovação, a estrutura física de `outbox_event_attempts` e os detalhes operacionais da reconciliação de `attempt_count`.
 
 ### Etapa 7 — Contratos da API
 **Estado:** NÃO INICIADA
@@ -195,7 +197,7 @@ Entregáveis:
 - Lista de pendências e riscos.
 - Versão de referência dos requisitos.
 - Relatório de auditoria documental cruzada.
-- Especificação OpenAPI YAML materializada; sintaxe YAML validada e validação estrutural por ferramenta compatível pendente.
+- Especificação OpenAPI YAML materializada; validação estrutural concluída com Redocly CLI 2.73.0: 0 erros, 50 avisos e 0 ignorados. A revisão dos avisos e das pendências semânticas/documentais permanece em aberto.
 
 Critérios de aceite:
 - Documentos sem contradições.
@@ -205,6 +207,8 @@ Critérios de aceite:
 - Aprovação geral do planejamento.
 
 A consolidação documental desta etapa aguarda aprovação explícita do usuário. A existência de documentos consolidados não autoriza a Etapa 10 nem implementação funcional. Pendências da auditoria estão registradas em `docs/09-auditoria/relatorio-de-consolidacao.md`.
+
+A documentação lógica do DER e do Dicionário de Dados v1.1 foi aprovada. Essa aprovação parcial não altera o estado geral da Etapa 9, que continua aguardando aprovação, nem autoriza a Etapa 10. As pendências físicas de `outbox_event_attempts` e operacionais da reconciliação permanecem registradas para etapas futuras.
 
 ## 4. Fase II — Preparação do ambiente
 
