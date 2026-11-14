@@ -5,7 +5,7 @@
 | Identificador | MB-DATA-001 |
 | Classe | Documento oficial da biblioteca MyBank |
 | Versão | 1.1 — Consolidação documental |
-| Estado | Consolidado para revisão e aprovação humana; não aprovado |
+| Estado | Versão 1.1 aprovada; resolução documental das pendências desta etapa aguarda aprovação humana |
 | Banco | PostgreSQL |
 | Origem preservada | [Documento de modelagem v1.0 — proposta para revisão](../99-fontes-originais/MyBank%20—%20Documento%20de%20Modelagem%20do%20Banco%20de%20Dados.md) |
 | Complemento | [Revisão da modelagem e pendências](revisao-modelagem-e-pendencias.md), proposta usada somente quando confirmada por decisões posteriores |
@@ -601,7 +601,8 @@ Controla desafios de autenticação adicional, inclusive a simulação de 2FA no
 
 Regras:
 
-- Código demonstrativo com seis dígitos, uso único e validade inicial proposta de dois minutos.
+- O prazo de dois minutos refere-se exclusivamente ao código demonstrativo de seis dígitos, isolado para desenvolvimento, conforme a especificação funcional.
+- O desafio de login com 2FA tem validade de cinco minutos, conforme os contratos REST v1.1. Esse desafio não se confunde com o código demonstrativo; os prazos não são intercambiáveis.
 - Novo código invalida o anterior para o mesmo desafio.
 - Tentativas limitadas.
 - Código demonstrativo acessível exclusivamente pelo mecanismo de desenvolvimento.
@@ -1069,8 +1070,8 @@ Regras:
 - Taxa de juros mensal.
 - Condições aprovadas devem ser armazenadas como snapshot.
 - Alterações futuras nas configurações não modificam contratos existentes.
-- Comprometimento de renda inicial proposto de 30%, configurável.
-- A análise considera renda declarada, empréstimos ativos e capacidade de pagamento simulada.
+- O comprometimento máximo permitido é de 30% da renda declarada. Esse teto é uma decisão aprovada; eventual configuração administrativa não pode ultrapassá-lo.
+- A análise considera renda declarada e seu snapshot, empréstimos ativos, parcelas existentes, valor solicitado, prazo, juros e capacidade de pagamento.
 - Aprovação manual exige justificativa e auditoria.
 - Oferta aprovada deve possuir validade definida.
 - Empréstimos simultâneos respeitam limites e concorrência.
@@ -1324,7 +1325,7 @@ Implementa o padrão Transactional Outbox.
 | `event_type` | VARCHAR(100) | NN |
 | `payload` | JSONB | NN |
 | `status` | VARCHAR(20) | NN |
-| `attempt_count` | INTEGER | NN, padrão 0 |
+| `attempt_count` | INTEGER | NN, padrão 0; contador acumulado desnormalizado das tentativas registradas em `outbox_event_attempts` |
 | `created_at` | TIMESTAMPTZ | NN |
 | `processed_at` | TIMESTAMPTZ | NULL |
 | `next_attempt_at` | TIMESTAMPTZ | NULL |
@@ -1338,8 +1339,14 @@ Regras:
 - Processamento assíncrono não deve comprometer a consistência financeira.
 - Consumidores devem ser idempotentes.
 - Tentativas devem ser limitadas.
+- O ciclo automático seleciona evento `PENDING` para processamento. Uma falha recuperável poderá retornar o evento a `PENDING` enquanto houver tentativas automáticas disponíveis, respeitando backoff progressivo. Esgotado o limite, o evento termina em `FAILED`.
+- `FAILED` é elegível a reprocessamento manual somente após validação de elegibilidade e autorização. O reprocessamento autorizado inicia novo ciclo, preserva as tentativas anteriores e mantém o processamento idempotente.
+- O registro individual da tentativa em `outbox_event_attempts` e a atualização de `attempt_count` devem ocorrer atomicamente na mesma transação.
+- `attempt_count` serve a consultas rápidas e não substitui o histórico individual. Um mecanismo de reconciliação deve comparar o contador com os registros de tentativas; em caso de divergência, o histórico individual é a referência autoritativa.
 - Falhas devem ser registradas.
 - Não utilizar Kafka ou RabbitMQ inicialmente.
+
+O mecanismo e a frequência operacional da reconciliação não foram definidos e permanecem para detalhamento técnico. Essa pendência não altera a autoridade do histórico individual.
 
 ---
 
@@ -1428,9 +1435,9 @@ Toda transição deve ser registrada sem alterar o histórico. Nenhum estado ou 
 
 ### 4.12.3. `outbox_event_attempts` — entidade lógica
 
-Registra individualmente cada tentativa associada a um `outbox_event`: um evento tem zero ou mais registros de tentativa; cada tentativa pertence a um evento.
+É a fonte autoritativa do histórico individual de tentativas associadas a um `outbox_event`: um evento tem zero ou mais registros de tentativa; cada tentativa pertence a um evento. Registra as execuções automáticas e os reprocessamentos manuais, preservando o histórico para auditoria e reconstrução da quantidade de tentativas.
 
-O requisito aprovado abrange preservação das tentativas anteriores, limite de tentativas, backoff progressivo, falha terminal `FAILED`, idempotência dos consumidores e reprocessamento controlado. O sucesso é `PROCESSED`; `DEAD_LETTER` é mecanismo operacional.
+O histórico é a referência para reconciliar `outbox_events.attempt_count`, contador acumulado desnormalizado e não autoritativo. O registro individual da tentativa e a atualização do contador devem ser atômicos. O requisito aprovado também abrange preservação das tentativas anteriores, limite de tentativas, backoff progressivo, falha terminal `FAILED`, idempotência dos consumidores e reprocessamento controlado. O sucesso é `PROCESSED`; `DEAD_LETTER` é mecanismo operacional.
 
 **Definição física pendente:** atributos, tipos, nulabilidade, constraints e índices de cada tentativa não estão especificados em fonte aprovada. Este documento não os inventa.
 
@@ -1521,7 +1528,7 @@ As transições da versão-base são preservadas para as entidades em que já es
 
 | Contexto | Transições documentadas |
 |---|---|
-| Transação | `PENDING` → `PROCESSING`, `CANCELLED` ou `REJECTED`; `PROCESSING` → `COMPLETED`, `FAILED` ou `REJECTED`; estados finais não retornam |
+| Transação | `PENDING` → `PROCESSING` ou `CANCELLED`; `PROCESSING` → `COMPLETED`, `FAILED` ou `REJECTED`; estados finais não podem ser reabertos |
 | Pagamento de serviço | `PENDING` → `SCHEDULED`, `PROCESSING` ou `CANCELLED`; `SCHEDULED` → `PROCESSING` ou `CANCELLED`; `PROCESSING` → `COMPLETED`, `FAILED` ou `REJECTED` |
 | Empréstimo | `REQUESTED` → `UNDER_REVIEW`, `REJECTED` ou `CANCELLED`; `UNDER_REVIEW` → `APPROVED` ou `REJECTED`; `APPROVED` → `CONTRACTED` ou `CANCELLED`; `CONTRACTED` → `ACTIVE`; `ACTIVE` → `PAID_OFF` |
 | Parcela | `PENDING` → `PAID`, `OVERDUE` ou `CANCELLED`; `OVERDUE` → `PAID` |
