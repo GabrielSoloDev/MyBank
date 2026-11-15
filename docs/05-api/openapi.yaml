@@ -264,6 +264,8 @@ paths:
           description: Sessão revogada.
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /auth/reauthentication:
     post:
@@ -474,6 +476,8 @@ paths:
           description: Solicitação recebida.
         '429':
           $ref: '#/components/responses/TooManyRequests'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   # ==========================================================
   # CUSTOMERS
@@ -512,6 +516,8 @@ paths:
                 $ref: '#/components/schemas/CustomerResponse'
         '422':
           $ref: '#/components/responses/BusinessRuleError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /customers/me/accounts:
     get:
@@ -618,6 +624,8 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/BusinessRuleError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /accounts/{accountId}:
     parameters:
@@ -635,6 +643,8 @@ paths:
                 $ref: '#/components/schemas/AccountResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /accounts/{accountId}/balance:
     get:
@@ -652,6 +662,8 @@ paths:
                 $ref: '#/components/schemas/BalanceResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /accounts/{accountId}/statement:
     get:
@@ -720,6 +732,8 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /accounts/{accountId}/block:
     post:
@@ -737,6 +751,8 @@ paths:
                 $ref: '#/components/schemas/AccountResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /accounts/{accountId}/unblock:
     post:
@@ -754,6 +770,8 @@ paths:
                 $ref: '#/components/schemas/AccountResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /accounts/{accountId}/close:
     post:
@@ -774,6 +792,8 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/BusinessRuleError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /accounts/{accountId}/holders:
     get:
@@ -835,6 +855,8 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/BusinessRuleError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /account-invitations/{invitationId}/accept:
     post:
@@ -854,6 +876,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /account-invitations/{invitationId}/cancel:
     post:
@@ -871,6 +895,8 @@ paths:
                 $ref: '#/components/schemas/InvitationResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /accounts/{accountId}/leave:
     post:
@@ -889,6 +915,8 @@ paths:
                 $ref: '#/components/schemas/AccountHolderResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /accounts/{accountId}/closure-consents:
     post:
@@ -907,6 +935,8 @@ paths:
                 $ref: '#/components/schemas/ClosureConsentResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   # ==========================================================
   # FINANCIAL TRANSACTIONS
@@ -941,6 +971,8 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/BusinessRuleError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /transfers/{transferId}:
     get:
@@ -958,6 +990,8 @@ paths:
                 $ref: '#/components/schemas/TransactionResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /accounts/{accountId}/transfers:
     get:
@@ -1004,6 +1038,8 @@ paths:
                 $ref: '#/components/schemas/TransactionResponse'
         '422':
           $ref: '#/components/responses/BusinessRuleError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /deposits/{depositId}:
     get:
@@ -1021,6 +1057,8 @@ paths:
                 $ref: '#/components/schemas/TransactionResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /accounts/{accountId}/deposits:
     get:
@@ -1067,6 +1105,8 @@ paths:
                 $ref: '#/components/schemas/TransactionResponse'
         '422':
           $ref: '#/components/responses/BusinessRuleError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /withdrawals/{withdrawalId}:
     get:
@@ -1084,6 +1124,8 @@ paths:
                 $ref: '#/components/schemas/TransactionResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /accounts/{accountId}/withdrawals:
     get:
@@ -1124,6 +1166,8 @@ paths:
                 $ref: '#/components/schemas/TransactionResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   # ==========================================================
   # PAYMENTS
@@ -1174,6 +1218,8 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/BusinessRuleError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /payments/{paymentId}:
     get:
@@ -1191,6 +1237,8 @@ paths:
                 $ref: '#/components/schemas/PaymentResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /payments/{paymentId}/cancel:
     post:
@@ -1208,6 +1256,8 @@ paths:
                 $ref: '#/components/schemas/PaymentResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /accounts/{accountId}/payments:
     get:
@@ -1256,6 +1306,8 @@ paths:
                 $ref: '#/components/schemas/LoanSimulationResponse'
         '422':
           $ref: '#/components/responses/BusinessRuleError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /loans:
     get:
@@ -1297,6 +1349,8 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/BusinessRuleError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /loans/{loanId}:
     get:
@@ -1314,6 +1368,8 @@ paths:
                 $ref: '#/components/schemas/LoanResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /loans/{loanId}/installments:
     get:
@@ -1351,6 +1407,8 @@ paths:
                 $ref: '#/components/schemas/InstallmentResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /loans/{loanId}/installments/{installmentId}/payments:
     get:
@@ -1403,6 +1461,8 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/BusinessRuleError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /loans/{loanId}/contract:
     get:
@@ -1420,6 +1480,8 @@ paths:
                 $ref: '#/components/schemas/LoanContractResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /loans/{loanId}/cancel:
     post:
@@ -1437,6 +1499,8 @@ paths:
                 $ref: '#/components/schemas/LoanResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   # ==========================================================
   # CARDS
@@ -1477,6 +1541,8 @@ paths:
                 $ref: '#/components/schemas/CardResponse'
         '422':
           $ref: '#/components/responses/BusinessRuleError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /cards/{cardId}:
     get:
@@ -1494,6 +1560,8 @@ paths:
                 $ref: '#/components/schemas/CardResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /cards/{cardId}/block:
     post:
@@ -1511,6 +1579,8 @@ paths:
                 $ref: '#/components/schemas/CardResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /cards/{cardId}/unblock:
     post:
@@ -1528,6 +1598,8 @@ paths:
                 $ref: '#/components/schemas/CardResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /cards/{cardId}/cancel:
     post:
@@ -1545,6 +1617,8 @@ paths:
                 $ref: '#/components/schemas/CardResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /cards/{cardId}/purchases:
     post:
@@ -1571,6 +1645,8 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/BusinessRuleError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /cards/{cardId}/transactions:
     get:
@@ -1611,6 +1687,8 @@ paths:
                 $ref: '#/components/schemas/CardTransactionResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /card-transactions/{transactionId}/reverse:
     post:
@@ -1641,6 +1719,8 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/BusinessRuleError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   # ==========================================================
   # ADMINISTRATION
@@ -1670,6 +1750,8 @@ paths:
                 $ref: '#/components/schemas/LoanListResponse'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /admin/loans/{loanId}/review:
     post:
@@ -1697,6 +1779,8 @@ paths:
                 $ref: '#/components/schemas/LoanResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /admin/loans/{loanId}/approve:
     post:
@@ -1727,6 +1811,8 @@ paths:
           $ref: '#/components/responses/Conflict'
         '422':
           $ref: '#/components/responses/BusinessRuleError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /admin/loans/{loanId}/reject:
     post:
@@ -1755,6 +1841,8 @@ paths:
                 $ref: '#/components/schemas/LoanResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /admin/loans/{loanId}/contract:
     post:
@@ -1777,6 +1865,8 @@ paths:
                 $ref: '#/components/schemas/LoanContractResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /admin/transactions/{transactionId}/reversals:
     post:
@@ -1919,6 +2009,8 @@ paths:
                 $ref: '#/components/schemas/CustomerListResponse'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /admin/customers/{customerId}:
     get:
@@ -1940,6 +2032,8 @@ paths:
                 $ref: '#/components/schemas/CustomerResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /admin/customers/{customerId}/block:
     post:
@@ -1968,6 +2062,8 @@ paths:
                 $ref: '#/components/schemas/CustomerResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /admin/customers/{customerId}/unblock:
     post:
@@ -1996,6 +2092,8 @@ paths:
                 $ref: '#/components/schemas/CustomerResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /admin/customers/{customerId}/suspend:
     post:
@@ -2024,6 +2122,8 @@ paths:
                 $ref: '#/components/schemas/CustomerResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /admin/customers/{customerId}/close:
     post:
@@ -2052,6 +2152,8 @@ paths:
                 $ref: '#/components/schemas/CustomerResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /admin/accounts:
     get:
@@ -2099,6 +2201,8 @@ paths:
                 $ref: '#/components/schemas/AccountResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /admin/accounts/{accountId}/block:
     post:
@@ -2235,6 +2339,8 @@ paths:
                 $ref: '#/components/schemas/AccountResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /admin/administrators:
     get:
@@ -2302,6 +2408,8 @@ paths:
                 $ref: '#/components/schemas/InvitationResponse'
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /admin/administrators/invitations/{invitationId}/cancel:
     post:
@@ -2353,6 +2461,8 @@ paths:
           description: Administrador bloqueado.
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /admin/administrators/{userId}/unblock:
     post:
@@ -2377,6 +2487,8 @@ paths:
           description: Administrador reativado.
         '409':
           $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /admin/settings:
     get:
@@ -2419,6 +2531,8 @@ paths:
                 $ref: '#/components/schemas/SettingResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
     patch:
       tags: [Administration]
       operationId: updateSystemSetting
@@ -2445,6 +2559,8 @@ paths:
                 $ref: '#/components/schemas/SettingResponse'
         '422':
           $ref: '#/components/responses/BusinessRuleError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   # ==========================================================
   # NOTIFICATIONS
@@ -2486,6 +2602,8 @@ paths:
                 $ref: '#/components/schemas/NotificationResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /notifications/{notificationId}/read:
     patch:
@@ -2499,6 +2617,8 @@ paths:
           description: Notificação marcada como lida.
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /notifications/read-all:
     post:
@@ -2600,6 +2720,8 @@ paths:
                 $ref: '#/components/schemas/AuditEventListResponse'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /admin/audit-events/{eventId}:
     get:
@@ -2621,6 +2743,8 @@ paths:
                 $ref: '#/components/schemas/AuditEventResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   # ==========================================================
   # PRIVACY
@@ -2659,6 +2783,8 @@ paths:
                 $ref: '#/components/schemas/PrivacyRequestResponse'
         '422':
           $ref: '#/components/responses/BusinessRuleError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /privacy/requests/{requestId}:
     get:
@@ -2676,6 +2802,8 @@ paths:
                 $ref: '#/components/schemas/PrivacyRequestResponse'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
 components:
 
@@ -3035,16 +3163,6 @@ components:
           minimum: 0
         correlationId:
           $ref: '#/components/schemas/UUID'
-
-    ResponseMeta:
-      type: object
-      additionalProperties: false
-      required: [correlationId, timestamp]
-      properties:
-        correlationId:
-          $ref: '#/components/schemas/UUID'
-        timestamp:
-          $ref: '#/components/schemas/DateTime'
 
     ProblemField:
       type: object
