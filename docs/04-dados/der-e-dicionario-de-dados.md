@@ -1614,6 +1614,6 @@ Pagamento simulado após encerramento de conta, estrutura lógica de pagamento d
 - Estados coincidem com definições aprovadas; nenhuma transição é inferida.
 - Pagamentos de parcelas, Ledger, estornos, CPF, snapshot, auditoria e idempotência são alinhados às decisões aprovadas.
 - Pendências técnicas permanecem explícitas, sem valores ou campos inventados.
-- A versão 1.1 é submetida a revisão humana e não declara aprovação final da modelagem ou da Etapa 9.
+- A documentação lógica v1.1 está aprovada pelo usuário. Essa aprovação não conclui a Etapa 9 nem autoriza implementação física; permanecem para etapas futuras os atributos físicos de `outbox_event_attempts` e os detalhes operacionais da reconciliação.
 
-**Estado:** consolidação documental v1.1 para revisão. A aprovação depende de revisão explícita do usuário e da resolução ou aceitação formal das pendências técnicas.
+**Estado:** documentação lógica v1.1 aprovada. As pendências técnicas de detalhamento físico e operação estão registradas para etapas futuras e não reabrem a aprovação lógica.

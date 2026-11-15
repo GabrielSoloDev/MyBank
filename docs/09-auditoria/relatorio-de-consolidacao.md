@@ -24,7 +24,7 @@ Organizar e padronizar a documentação existente em diretórios oficiais numera
 
 ## 2. Inventário
 
-O inventário inicial encontrou 12 documentos Markdown e uma especificação OpenAPI YAML. O DER aprovado e o dicionário de dados aprovados, referenciados como versão 1.0, não estavam presentes no repositório.
+O inventário inicial desta consolidação encontrou 12 documentos Markdown e uma especificação OpenAPI YAML. Naquele momento, os documentos de modelagem então procurados não estavam presentes no repositório; esse registro é histórico e foi superado pela elaboração e aprovação posterior da documentação lógica DER e Dicionário de Dados v1.1. O documento original v1.0 permanece preservado como fonte histórica, sem substituir a versão lógica aprovada.
 
 O documento transversal **Consolidação da Documentação Técnica e Arquitetural** estava em proposta para revisão. Por preservar seu estado, ele permanece somente como fonte arquivada e não foi declarado oficial.
 
@@ -80,6 +80,7 @@ A biblioteca oficial usa um único índice para declarar fonte normativa por ass
 - Markdown (arquivos oficiais, governança raiz e README do arquivo): 16 arquivos, 653 títulos, 74 tabelas; links, âncoras, hierarquia, cercas e espaçamento aprovados sem erros. Os snapshots históricos permanecem inalterados e foram excluídos da normalização.
 - Diagramas e blocos de código: cercas revisadas quanto a balanceamento; tags de escape removidas das versões oficiais.
 - OpenAPI 3.1.1: validada com Redocly CLI `2.73.0`, versão executada por `npx` com cache temporário, sem instalação global. Comando: `npm_config_cache=/tmp/mybank-redocly-cache npm_config_offline=true npx --yes @redocly/cli@2.73.0 lint --format=json docs/05-api/openapi.yaml`. Resultado: 0 erros, 50 avisos e 0 ignorados; saída final: `Your API description is valid.`
+- Na auditoria documental mais recente, não foi possível repetir a validação Redocly porque a ferramenta não estava disponível no ambiente. Nenhuma ferramenta foi instalada. O resultado acima permanece o registro de uma execução histórica e não comprova uma validação integral atual.
 - Auditoria estrutural adicional: 106 path items e 116 operações; `operationId` únicos; parâmetros de rota obrigatórios presentes; respostas definidas; 585 referências locais resolvidas; nenhuma referência externa ou ciclo de schema detectado.
 - Avisos Redocly registrados sem supressão:
   - `info-license-strict`: linha 23, `#/info/license`; licença sem URL ou identificador.
@@ -124,7 +125,8 @@ A biblioteca oficial usa um único índice para declarar fonte normativa por ass
 
 ## 8. Pendências e aprovação
 
-- Receber os documentos originais aprovados do DER e do dicionário de dados. Não foram reconstruídos campos, tipos ou relações ausentes.
+- A documentação lógica DER e Dicionário de Dados v1.1 foi aprovada pelo usuário. O documento original v1.0 permanece preservado; continuam pendentes para etapas futuras o detalhamento físico de `outbox_event_attempts` e os detalhes operacionais da reconciliação. Essas pendências não invalidam a aprovação lógica.
+- Repetir a validação Redocly em etapa autorizada, pois a auditoria mais recente não conseguiu executá-la; o resultado registrado de 0 erros e 50 avisos é histórico.
 - Analisar os 50 avisos do Redocly e decidir separadamente quais ajustes de qualidade devem ser aprovados.
 - A estrutura detalhada dos objetos do histórico de tentativas da Outbox continua pendente; as fontes aprovadas não especificam os campos, e o schema permaneceu genérico.
 - Concluir a verificação automatizada de links e âncoras após a organização.

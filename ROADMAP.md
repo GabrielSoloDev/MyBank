@@ -36,6 +36,15 @@ Nenhuma etapa poderá começar sem autorização explícita do usuário.
 - NECESSITA AJUSTES
 - BLOQUEADA
 
+### 2.1. Interpretação dos estados e dos artefatos
+
+- **Documento produzido:** o arquivo existe; isso, por si só, não comprova revisão ou aprovação.
+- **Documento revisado:** seu conteúdo passou por revisão registrada; isso não aprova automaticamente decisões nem conclui uma etapa.
+- **Decisão aprovada:** existe aprovação explícita do usuário ou registro formal de aprovação aplicável, como o estado de uma ADR individual.
+- **Etapa formalmente concluída:** os critérios de aceite da etapa foram atendidos e a conclusão recebeu aprovação explícita do usuário.
+
+O estado de uma etapa registra sua execução formal no Roadmap e não é inferido pela existência de documentos ou decisões relacionados. Assim, uma etapa marcada como **NÃO INICIADA** significa que não há registro de início formal daquela etapa; não significa necessariamente que nenhum artefato relacionado exista. A existência desses artefatos também não autoriza alterar o estado para **APROVADA** ou **AGUARDANDO APROVAÇÃO** sem o registro correspondente.
+
 ## 3. Fase I — Planejamento e documentação
 
 ### Etapa 1 — Regras permanentes do projeto

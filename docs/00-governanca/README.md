@@ -25,6 +25,8 @@
 
 | ID | Caminho oficial | Escopo | Estado do conteúdo |
 |---|---|---|---|
+| MB-GOV-AGENTS | [`../../AGENTS.md`](../../AGENTS.md) | Regras permanentes de trabalho e governança | Documento oficial de governança do projeto. |
+| MB-GOV-ROADMAP | [`../../ROADMAP.md`](../../ROADMAP.md) | Fases, etapas, dependências e critérios de aceite | Documento oficial de planejamento; cada etapa mantém seu estado formal próprio. |
 | MB-ADR | [`01-decisoes/adr.md`](../01-decisoes/adr.md) | Decisões arquiteturais | Catálogo com status geral proposto; ADRs individuais indicam estados próprios. |
 | MB-DEC | [`01-decisoes/decisoes-tecnicas-complementares.md`](../01-decisoes/decisoes-tecnicas-complementares.md) | Decisões técnicas complementares | Decisões aprovadas, v1.1. |
 | MB-REQ | [`02-requisitos/especificacao-funcional.md`](../02-requisitos/especificacao-funcional.md) | Requisitos funcionais e não funcionais | Proposta para aprovação. |

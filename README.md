@@ -30,8 +30,8 @@ Seu objetivo é demonstrar conhecimentos de engenharia de software, arquitetura,
 | Especificações e decisões técnicas | Em consolidação documental. Consulte o [Roadmap](ROADMAP.md) e o [índice documental](docs/00-governanca/README.md). |
 | Organização dos documentos | Entregue como subentrega aceita para continuidade. A consolidação integral ainda aguarda aprovação. |
 | Funcionalidades | Especificadas; nenhuma funcionalidade está implementada. |
-| DER e dicionário de dados | Os documentos originais aprovados aguardam recuperação. A revisão existente não os substitui. |
-| OpenAPI | YAML 3.1.1 disponível; validação estrutural integral ainda pendente. |
+| DER e dicionário de dados | A documentação lógica v1.1 está aprovada. Permanecem para etapas futuras o detalhamento físico de `outbox_event_attempts` e os detalhes operacionais da reconciliação; essas pendências não invalidam a aprovação lógica. |
+| OpenAPI | YAML 3.1.1 disponível. A validação histórica com Redocly CLI 2.73.0 registrou 0 erros, 50 avisos e 0 ignorados. A auditoria mais recente não conseguiu repetir essa validação porque Redocly CLI não estava disponível; a validação integral atual não está concluída. |
 | Ambiente de desenvolvimento | Etapa ainda não iniciada. |
 
 As funcionalidades descritas abaixo são escopo planejado, não recursos disponíveis em uma aplicação executável.
