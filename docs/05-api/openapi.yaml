@@ -20,8 +20,6 @@ info:
       - Autorização e titularidade são verificadas no backend.
   contact:
     name: MyBank API
-  license:
-    name: Projeto educacional de portfólio
 
 servers:
   - url: http://localhost:8080/api/v1
@@ -31,24 +29,38 @@ servers:
 
 tags:
   - name: Authentication
+    description: Cadastro, autenticação, verificação em duas etapas, sessões e recuperação de acesso.
   - name: Customers
+    description: Consulta e atualização do perfil do cliente autenticado.
   - name: Accounts
+    description: Abertura, consulta, saldo, extrato e operações sobre contas bancárias.
   - name: Account Invitations
+    description: Convites para inclusão de titulares em contas conjuntas.
   - name: Transactions
+    description: Consulta de transações financeiras registradas no MyBank.
   - name: Transfers
+    description: Transferências simuladas entre contas MyBank.
   - name: Deposits
+    description: Depósitos simulados em contas MyBank.
   - name: Withdrawals
+    description: Saques simulados de contas MyBank.
   - name: Payments
+    description: Pagamentos simulados de serviços fictícios e consultas associadas.
   - name: Loans
+    description: Simulação, solicitação, consulta e pagamento de parcelas de empréstimos.
   - name: Cards
+    description: Cartões virtuais fictícios e operações simuladas de compra, bloqueio e cancelamento.
   - name: Notifications
+    description: Consulta, leitura e preferências de notificações internas.
   - name: Administration
     description: >-
       Todas as operações sob /admin/** exigem usuário autenticado com perfil ADMIN,
       sessão administrativa com 2FA concluído e autorização validada pelo backend.
       Bearer representa autenticação e não substitui autorização por perfil.
   - name: Audit
+    description: Consulta de eventos e registros de auditoria.
   - name: Privacy
+    description: Solicitações de privacidade dos titulares de dados.
 
 security:
   - bearerAuth: []
@@ -3355,8 +3367,7 @@ components:
       required: [data]
       properties:
         data:
-          allOf:
-            - $ref: '#/components/schemas/TokenPair'
+          $ref: '#/components/schemas/TokenPair'
 
     AccessTokenResponse:
       type: object
