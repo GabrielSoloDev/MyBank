@@ -219,7 +219,9 @@ A consolidação documental desta etapa aguarda aprovação explícita do usuár
 
 A documentação lógica do DER e do Dicionário de Dados v1.1 foi aprovada. Essa aprovação parcial não altera o estado geral da Etapa 9, que continua aguardando aprovação, nem autoriza a Etapa 10. As pendências físicas de `outbox_event_attempts` e operacionais da reconciliação permanecem registradas para etapas futuras.
 
-A subetapa documental 2.1 — complementação das respostas HTTP `401` e revisão dos componentes OpenAPI — foi aprovada pelo usuário em 2026-11-18. A aprovação limita-se ao escopo dessa subetapa; a validação integral atual com Redocly permanece pendente. O estado geral da Etapa 9 continua aguardando aprovação, e a Etapa 3 permanece não iniciada.
+A subetapa documental 2.1 — complementação das respostas HTTP `401` e revisão dos componentes OpenAPI — foi aprovada pelo usuário em 2026-11-18. A aprovação limita-se ao escopo dessa subetapa; a validação integral atual com Redocly permanece pendente. O estado geral da Etapa 9 continua aguardando aprovação, e a Etapa 3 do Roadmap (Registros de decisões arquiteturais) permanece não iniciada.
+
+A subetapa documental 3 — revisão dos avisos restantes da OpenAPI — foi aprovada pelo usuário em 2026-11-19. A aprovação abrangeu as descrições das 15 tags, a simplificação do `allOf` e a remoção de `info.license`, pois não há licença formal aprovada. A validação integral com Redocly CLI permanece pendente; esta aprovação não declara a OpenAPI integralmente validada. O estado geral da Etapa 9 continua aguardando aprovação. A Etapa 3 do Roadmap (Registros de decisões arquiteturais) e a Etapa 4 (Especificação funcional consolidada) permanecem não iniciadas.
 
 ## 4. Fase II — Preparação do ambiente
 
