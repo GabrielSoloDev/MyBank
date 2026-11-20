@@ -17,6 +17,7 @@
 - [6. Duplicidades e referências](#6-duplicidades-e-referencias)
 - [7. Validações](#7-validacoes)
 - [8. Pendências e aprovação](#8-pendencias-e-aprovacao)
+- [9. Atualização da auditoria — 2026-11-20](#9-atualizacao-da-auditoria-2026-11-20)
 
 ## 1. Objetivo e escopo
 
@@ -75,13 +76,15 @@ A biblioteca oficial usa um único índice para declarar fonte normativa por ass
 
 ## 7. Validações
 
+> **Registros históricos.** Os comandos e resultados abaixo descrevem uma etapa documental anterior. A validação atual, os testes recentes e os avisos vigentes estão registrados na seção 9.
+
 - `git diff --check`: aprovado.
 - Integridade de cópias arquivadas: arquivos foram movidos sem transformação; as versões oficiais foram geradas a partir desses conteúdos.
 - Markdown (arquivos oficiais, governança raiz e README do arquivo): 16 arquivos, 653 títulos, 74 tabelas; links, âncoras, hierarquia, cercas e espaçamento aprovados sem erros. Os snapshots históricos permanecem inalterados e foram excluídos da normalização.
 - Diagramas e blocos de código: cercas revisadas quanto a balanceamento; tags de escape removidas das versões oficiais.
 - OpenAPI 3.1.1: validada com Redocly CLI `2.73.0`, versão executada por `npx` com cache temporário, sem instalação global. Comando: `npm_config_cache=/tmp/mybank-redocly-cache npm_config_offline=true npx --yes @redocly/cli@2.73.0 lint --format=json docs/05-api/openapi.yaml`. Resultado: 0 erros, 50 avisos e 0 ignorados; saída final: `Your API description is valid.`
-- Na auditoria documental mais recente, não foi possível repetir a validação Redocly porque a ferramenta não estava disponível no ambiente. Nenhuma ferramenta foi instalada. O resultado acima permanece o registro de uma execução histórica e não comprova uma validação integral atual.
-- Auditoria estrutural adicional: 106 path items e 116 operações; `operationId` únicos; parâmetros de rota obrigatórios presentes; respostas definidas; 585 referências locais resolvidas; nenhuma referência externa ou ciclo de schema detectado.
+- A auditoria anterior não conseguiu repetir a validação Redocly porque a ferramenta não estava disponível. Esse registro é histórico e foi atualizado na seção 9 com uma execução atual.
+- Auditoria estrutural adicional anterior: 106 path items e 116 operações; `operationId` únicos; parâmetros de rota obrigatórios presentes; respostas definidas; 585 referências locais resolvidas; nenhuma referência externa ou ciclo de schema detectado. A verificação da execução atual é registrada na seção 9.
 - Avisos Redocly registrados sem supressão:
   - `info-license-strict`: linha 23, `#/info/license`; licença sem URL ou identificador.
   - `no-server-example.com`: linha 27, `#/servers/0/url`, e linha 29, `#/servers/1/url`; URLs de servidor apontam para localhost.
@@ -119,15 +122,89 @@ A biblioteca oficial usa um único índice para declarar fonte normativa por ass
     - linha 2408: `#/paths/~1notifications~1preferences/patch/responses`
     - linha 2500: `#/paths/~1privacy~1requests/get/responses`
   - `no-unused-components`: linha 2911, `#/components/schemas/ResponseMeta` (schema não utilizado); linha 2566, `#/components/securitySchemes/reauthenticationToken` (security scheme sem uso em requisitos `security`; reautenticação segue documentada por parâmetro de cabeçalho nas operações aplicáveis).
-- Nenhum aviso foi automaticamente descartado.
-- Não foi executada segunda validação estrutural independente; não havia outra ferramenta compatível disponível, e nenhuma foi instalada.
+- Nenhum aviso foi automaticamente descartado na execução histórica descrita acima.
+- Não foi executada segunda validação estrutural independente naquela etapa; a limitação é histórica.
 - Atualização posterior da revisão semântica: `GET /admin/loans` agora exige somente Bearer para autenticação, não exige reautenticação contextual e documenta auditoria; as 31 operações `/admin/**` têm requisitos explícitos de perfil ADMIN, 2FA e autorização do backend. Outbox documenta `PROCESSED`, `FAILED` e o significado operacional de `DEAD_LETTER`.
 
 ## 8. Pendências e aprovação
 
-- A documentação lógica DER e Dicionário de Dados v1.1 foi aprovada pelo usuário. O documento original v1.0 permanece preservado; continuam pendentes para etapas futuras o detalhamento físico de `outbox_event_attempts` e os detalhes operacionais da reconciliação. Essas pendências não invalidam a aprovação lógica.
-- Repetir a validação Redocly em etapa autorizada, pois a auditoria mais recente não conseguiu executá-la; o resultado registrado de 0 erros e 50 avisos é histórico.
-- Analisar os 50 avisos do Redocly e decidir separadamente quais ajustes de qualidade devem ser aprovados.
-- A estrutura detalhada dos objetos do histórico de tentativas da Outbox continua pendente; as fontes aprovadas não especificam os campos, e o schema permaneceu genérico.
-- Concluir a verificação automatizada de links e âncoras após a organização.
+- A documentação lógica DER e Dicionário de Dados v1.1 foi aprovada pelo usuário e complementada nesta revisão com os atributos lógicos mínimos de tentativa e a política de reconciliação escolhida. Permanecem pendentes nomes/tipos/nulabilidade/constraints/índices e demais parâmetros físicos.
+- A frequência concreta e configuração da reconciliação permanecem pendentes; o método já foi definido como periódico, somente leitura, com alerta e sem correção automática.
+- A validação Redocly atual retornou 0 erros e 3 avisos; ver seção 9. Licença formal e URL de produção continuam sem decisão.
+- A verificação de links e âncoras desta revisão está concluída e resumida na seção 9.
 - Manter a Etapa 9 aguardando aprovação humana. A Etapa 10 e a implementação funcional não foram iniciadas.
+
+## 9. Atualização da auditoria — 2026-11-20
+
+### Inventário e autoridade documental
+
+| Documento | Versão ou estado | Aprovação e autoridade | Pendências |
+|---|---|---|---|
+| `AGENTS.md` | Governança oficial, sem versão indicada | Documento permanente vigente | Nenhuma alteração nesta atualização. |
+| `ROADMAP.md` | Planejamento oficial | Etapa 9 aguarda aprovação; Etapa 10 não iniciada | Gate documental e itens abaixo. |
+| `docs/00-governanca/README.md` | Índice oficial | Declara a fonte normativa e situação editorial | Não implica aprovação automática dos documentos propostos. |
+| `docs/01-decisoes/adr.md` | Catálogo geral proposto; ADRs individuais com estados próprios | ADRs `ACEITO` são decisões formalizadas | O status geral do catálogo continua proposto. |
+| `docs/01-decisoes/decisoes-tecnicas-complementares.md` | v1.1 | Decisões complementares aprovadas | Valores numéricos não definidos permanecem pendentes. |
+| `docs/02-requisitos/especificacao-funcional.md` | v1.0, proposta | Regras aprovadas prevalecem conforme rastreabilidade | Aprovação integral do documento. |
+| `docs/03-arquitetura/arquitetura-e-diagramas.md` | v1.0, proposta | Decisões aprovadas são preservadas | Aprovação integral do documento. |
+| `docs/04-dados/der-e-dicionario-de-dados.md` | v1.1 | Aprovado no escopo lógico | Detalhes físicos e parâmetros operacionais. |
+| `docs/04-dados/revisao-modelagem-e-pendencias.md` | v1.1, proposta | Não substitui o DER aprovado; propostas antigas identificadas como não normativas | Permanecem apenas referências e propostas sob revisão. |
+| `docs/05-api/contratos-rest.md` | v1.1, proposta consolidada | Aprovações pontuais registradas; não aprova o documento integral | Revisão formal do catálogo completo. |
+| `docs/05-api/openapi.yaml` | OpenAPI 3.1.1; API 1.1.0 | Subetapas documentais 2.1 e 3 aprovadas | 3 avisos Redocly; sem aprovação integral da Etapa 9. |
+| `docs/05-api/openapi.md` | Índice do YAML | O YAML é a fonte normativa única | Atualizado para refletir a validação corrente. |
+| `docs/06-fluxos/fluxos-de-negocio.md` | v1.0, proposta | Decisões explicitamente aprovadas são respeitadas | Aprovação integral. |
+| `docs/07-frontend/especificacao-frontend.md` | v1.0, referência de desenvolvimento | Não significa implementação iniciada | Desenvolvimento não autorizado. |
+| `docs/08-operacao/parametros-operacionais.md` | v1.0, proposta | Valores propostos não são decisões | Parâmetros que exigem aprovação. |
+| `docs/09-auditoria/relatorio-de-consolidacao.md` | Atualizado nesta revisão | Relatório de trabalho para revisão humana | Aprovação da Etapa 9. |
+| `docs/99-fontes-originais/` | Snapshots históricos | Preservados, não normativos | Nenhum arquivo histórico modificado. |
+
+### Resultado atual do OpenAPI
+
+- Comando: `/tmp/mybank-redocly-cli/node_modules/.bin/redocly lint --format=json docs/05-api/openapi.yaml`.
+- Ferramenta: Redocly CLI 2.73.0, obtido em instalação temporária sob `/tmp`; não foi instalado globalmente nem adicionado às dependências do projeto.
+- Resultado: **0 erros, 3 avisos, 0 ignorados**, código de saída 0; arquivo declara OpenAPI 3.1.1 e API 1.1.0.
+- Avisos: `info-license` no objeto `info` (licença formal não aprovada) e `no-server-example.com` em `servers[0].url` e `servers[1].url` (localhost). Não foram inventados licença ou domínio de produção.
+- Resultado anterior de 50 avisos é histórico. Revisões aprovadas posteriores resolveram as ocorrências de tags, `allOf`, respostas 4XX e componentes sem uso, e removeram o metadado de licença fictício.
+
+### Outbox e auditoria cruzada
+
+- `outbox_event_attempts`: foram registrados como atributos lógicos aprovados id, referência ao evento, ciclo e número, origem, resultado, horários relevantes e resumo do erro. Nomes físicos finais, tipos, nulabilidade, constraints e índices continuam pendentes.
+- `outbox_events.attempt_count`: acumulado entre ciclos, atualizado atomicamente junto ao registro de tentativa, desnormalizado e não autoritativo; o histórico de tentativas é a fonte autoritativa.
+- Reconciliação: comparação periódica somente leitura, com alerta em divergências e sem correção automática. A frequência deve ser configurável; o valor concreto permanece pendente.
+- As propostas antigas de cinco tentativas por ciclo, worker/lease, `reprocess_count` e reinício do contador foram identificadas como não normativas. `DEAD_LETTER` continua mecanismo operacional; `FAILED` é o estado terminal elegível.
+- CPF e chaves: AES-256-GCM e HMAC-SHA-256 independente aprovados; chaves fora do banco e do código-fonte. Ledger imutável, lançamentos compensatórios, idempotência, proteção de concorrência, snapshot contratual imutável, segurança ADMIN/2FA/reautenticação e correspondência entre frontend/API foram comparados e permanecem coerentes nos pontos revisados.
+- As 42 estruturas lógicas e os 11 diagramas do DER foram preservados. A validação anterior/renderização dos 11 diagramas segue registrada como aprovação; não foi executado um novo renderizador Mermaid nesta revisão.
+
+### HTML incorporado nos Markdown
+
+- Foram definidos os ganchos semânticos `info-box`, `success-box`, `warning-box`, `danger-box`, `note-box`, `example-box` e `definition-box`.
+- As caixas usam rótulos textuais, sem depender de cor; exemplos foram aplicados a decisões aprovadas, riscos, definições e exemplos de Outbox.
+- Nenhum CSS compartilhado foi criado: não há renderizador do projeto definido que carregue um arquivo CSS externo, e o GitHub não carrega CSS arbitrário do repositório. A compatibilidade visual universal não é declarada. Os blocos Mermaid e de código permanecem Markdown.
+- A renderização local com `markdown-it-py` (perfil `gfm-like`, HTML habilitado) foi executada em 11 documentos: 10 caixas foram preservadas e não foram encontrados tags `<aside>` desalinhadas ou sem rótulo acessível. Esse teste não reproduz o sanitizador do GitHub; a retenção das classes personalizadas no GitHub permanece não verificada.
+
+### Links, referências e critérios técnicos
+
+- Verificador local de links Markdown: 17 arquivos oficiais e de governança raiz analisados, 0 caminhos ausentes e 0 âncoras ausentes. Os snapshots em `99-fontes-originais/` foram excluídos porque devem permanecer inalterados e podem conter referências históricas antigas.
+- OpenAPI: 106 paths, 116 operações, 116 `operationId` únicos, 715 referências locais sem destinos inexistentes, nenhuma referência externa não aprovada, nenhum parâmetro de caminho obrigatório ausente e todas as operações possuem respostas.
+- Segurança semântica: 31 operações administrativas herdam Bearer e descrevem ADMIN, 2FA e autorização pelo backend. `GET /admin/loans` registra auditoria e não declara reautenticação contextual. O reprocessamento exige `confirmation: true`, tem resposta 202 e exige `statusUrl` na resposta aceita.
+- Outbox: os enums publicados contêm `PROCESSED` e `FAILED`; `DEAD_LETTER` permanece somente na descrição operacional. As regras de estado e preservação do histórico foram comparadas com decisões complementares, contratos REST, fluxos e frontend.
+- `git diff --check`: executado após as alterações desta revisão, sem erros.
+
+### Situação dos critérios
+
+| Critério | Estado | Observação |
+|---|---|---|
+| Modelo lógico DER aprovado e pendências lógicas registradas | Atendido | 42 estruturas e 11 diagramas preservados; permanecem decisões de mapeamento físico. |
+| Estrutura OpenAPI validada com Redocly | Atendido com avisos | 0 erros, 3 avisos, 0 ignorados. |
+| Auditoria cruzada e links internos | Atendido nos documentos oficiais revisados | Sem caminho ou âncora ausente; históricos preservados. |
+| Apresentação HTML semântica em Markdown | Atendido parcialmente | Caixas com rótulos; sem CSS externo por falta de mecanismo definido. GitHub não foi testado. |
+| Validação Mermaid nesta revisão | Não repetida | Diagramas não foram alterados; validação/renderização anterior dos 11 diagramas do DER permanece aprovada. |
+| Encerramento da Etapa 9 | Pendente | Aguardar revisão e aprovação humana; Etapa 10 não iniciada. |
+
+### Pendências e gate
+
+- Detalhes físicos de `outbox_event_attempts` e valores concretos/configuração operacional da frequência de reconciliação.
+- Licença formal e endereço oficial de produção.
+- Limite numérico de tentativas, backoff e demais valores operacionais não decididos.
+- Aprovação integral das especificações em estado de proposta e do relatório da Etapa 9.
+- A Etapa 10 permanece não iniciada; não houve SQL, migration, implementação funcional, publicação externa ou alteração dos arquivos históricos.

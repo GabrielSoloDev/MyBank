@@ -17,6 +17,11 @@
 
 ## Fonte normativa
 
+<aside class="note-box" role="note" aria-label="Fonte do contrato">
+<strong>Fonte do contrato.</strong>
+<p>O YAML é a única representação normativa da API. Esta página é um índice; alterações contratuais devem ser feitas e validadas em <code>openapi.yaml</code>.</p>
+</aside>
+
 O contrato executável da especificação é mantido exclusivamente em [`openapi.yaml`](openapi.yaml), versão OpenAPI 3.1.1. Ele contém endpoints, parâmetros, schemas, respostas, segurança e exemplos.
 
 ## Histórico e preservação
@@ -25,4 +30,4 @@ A especificação Markdown anterior, incluindo seu bloco YAML incorporado, foi p
 
 ## Validação
 
-A validação estrutural com Redocly CLI 2.73.0, seus avisos e limitações estão registrados no [relatório de consolidação](../09-auditoria/relatorio-de-consolidacao.md). O arquivo-fonte normativo permanece [`openapi.yaml`](openapi.yaml); esta página é somente índice documental.
+A validação executada em 2026-11-20 com Redocly CLI 2.73.0 retornou 0 erros, 3 avisos e 0 ignorados. Os avisos são a falta de licença formal e os dois endereços localhost, mantidos sem inventar URL de produção. O comando e as localizações estão no [relatório de consolidação](../09-auditoria/relatorio-de-consolidacao.md). Esta validação estrutural não aprova a Etapa 9 integral.

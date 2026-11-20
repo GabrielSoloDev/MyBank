@@ -10,6 +10,11 @@
 | Origem preservada | [Documento de modelagem v1.0 — proposta para revisão](../99-fontes-originais/MyBank%20—%20Documento%20de%20Modelagem%20do%20Banco%20de%20Dados.md) |
 | Complemento | [Revisão da modelagem e pendências](revisao-modelagem-e-pendencias.md), proposta usada somente quando confirmada por decisões posteriores |
 
+<aside class="success-box" role="note" aria-label="Aprovação do modelo lógico">
+<strong>Aprovado.</strong>
+<p>O DER e o Dicionário de Dados v1.1 foram aprovados no escopo lógico. Esta aprovação não autoriza SQL, migrações ou implementação física.</p>
+</aside>
+
 ## Sumário
 
 - [1. Objetivo e convenções](#1-objetivo-e-convencoes)
@@ -1439,7 +1444,26 @@ Toda transição deve ser registrada sem alterar o histórico. Nenhum estado ou 
 
 O histórico é a referência para reconciliar `outbox_events.attempt_count`, contador acumulado desnormalizado e não autoritativo. O registro individual da tentativa e a atualização do contador devem ser atômicos. O requisito aprovado também abrange preservação das tentativas anteriores, limite de tentativas, backoff progressivo, falha terminal `FAILED`, idempotência dos consumidores e reprocessamento controlado. O sucesso é `PROCESSED`; `DEAD_LETTER` é mecanismo operacional.
 
-**Definição física pendente:** atributos, tipos, nulabilidade, constraints e índices de cada tentativa não estão especificados em fonte aprovada. Este documento não os inventa.
+Requisitos aprovados para cada registro de tentativa:
+
+| Atributo lógico | Conteúdo que deve ser preservado |
+|---|---|
+| Identidade | UUID da tentativa (`id`). |
+| Evento | Referência obrigatória ao evento Outbox (`outbox_event_id`). |
+| Ciclo e número | Ciclo de processamento e posição da tentativa no ciclo. |
+| Origem | Indicação de tentativa automática ou reprocessamento manual. |
+| Resultado | Resultado individual da tentativa. |
+| Horários | Instantes relevantes à auditoria da execução. |
+| Erro resumido | Resumo da falha, quando houver. |
+
+`outbox_events.attempt_count` é acumulado entre ciclos, atualizado atomicamente com cada registro de tentativa e não autoritativo. O histórico individual é a referência para reconciliação.
+
+A reconciliação aprovada compara periodicamente, em modo somente leitura, o contador e o histórico. Divergências geram alerta; não há correção automática. A frequência deve ser configurável, sem valor numérico decidido.
+
+<aside class="warning-box" role="note" aria-label="Detalhamento físico pendente">
+<strong>Pendente.</strong>
+<p>Não foram definidos os nomes físicos finais, tipos, nulabilidade, constraints, índices, valores de resultado nem a representação exata dos horários. Nenhum SQL ou migration é definido aqui.</p>
+</aside>
 
 ### 4.12.4. `loan_installment_payments` — associação persistente
 

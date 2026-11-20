@@ -206,7 +206,7 @@ Entregáveis:
 - Lista de pendências e riscos.
 - Versão de referência dos requisitos.
 - Relatório de auditoria documental cruzada.
-- Especificação OpenAPI YAML materializada; validação estrutural concluída com Redocly CLI 2.73.0: 0 erros, 50 avisos e 0 ignorados. A revisão dos avisos e das pendências semânticas/documentais permanece em aberto.
+- Especificação OpenAPI YAML materializada; validação atual executada com Redocly CLI 2.73.0 em 2026-11-20: 0 erros, 3 avisos e 0 ignorados. Permanecem os avisos de licença não definida e URLs localhost; a contagem de 50 avisos é histórica e superada.
 
 Critérios de aceite:
 - Documentos sem contradições.
@@ -217,11 +217,11 @@ Critérios de aceite:
 
 A consolidação documental desta etapa aguarda aprovação explícita do usuário. A existência de documentos consolidados não autoriza a Etapa 10 nem implementação funcional. Pendências da auditoria estão registradas em `docs/09-auditoria/relatorio-de-consolidacao.md`.
 
-A documentação lógica do DER e do Dicionário de Dados v1.1 foi aprovada. Essa aprovação parcial não altera o estado geral da Etapa 9, que continua aguardando aprovação, nem autoriza a Etapa 10. As pendências físicas de `outbox_event_attempts` e operacionais da reconciliação permanecem registradas para etapas futuras.
+A documentação lógica do DER e do Dicionário de Dados v1.1 foi aprovada. Nesta revisão, foram definidos os atributos lógicos mínimos de `outbox_event_attempts` e a reconciliação periódica somente leitura, com alerta e sem correção automática. Nomes/tipos/constraints/índices físicos e a frequência concreta configurável permanecem para etapas futuras. Essa atualização não altera o estado geral da Etapa 9, que continua aguardando aprovação, nem autoriza a Etapa 10.
 
-A subetapa documental 2.1 — complementação das respostas HTTP `401` e revisão dos componentes OpenAPI — foi aprovada pelo usuário em 2026-11-18. A aprovação limita-se ao escopo dessa subetapa; a validação integral atual com Redocly permanece pendente. O estado geral da Etapa 9 continua aguardando aprovação, e a Etapa 3 do Roadmap (Registros de decisões arquiteturais) permanece não iniciada.
+A subetapa documental 2.1 — complementação das respostas HTTP `401` e revisão dos componentes OpenAPI — foi aprovada pelo usuário em 2026-11-18. A aprovação limita-se ao escopo dessa subetapa. A validação atual com Redocly CLI 2.73.0, executada em 2026-11-20, retornou 0 erros, 3 avisos e 0 ignorados; isso não equivale à aprovação integral da Etapa 9. A Etapa 3 do Roadmap (Registros de decisões arquiteturais) permanece não iniciada.
 
-A subetapa documental 3 — revisão dos avisos restantes da OpenAPI — foi aprovada pelo usuário em 2026-11-19. A aprovação abrangeu as descrições das 15 tags, a simplificação do `allOf` e a remoção de `info.license`, pois não há licença formal aprovada. A validação integral com Redocly CLI permanece pendente; esta aprovação não declara a OpenAPI integralmente validada. O estado geral da Etapa 9 continua aguardando aprovação. A Etapa 3 do Roadmap (Registros de decisões arquiteturais) e a Etapa 4 (Especificação funcional consolidada) permanecem não iniciadas.
+A subetapa documental 3 — revisão dos avisos restantes da OpenAPI — foi aprovada pelo usuário em 2026-11-19. A aprovação abrangeu as descrições das 15 tags, a simplificação do `allOf` e a remoção de `info.license`, pois não há licença formal aprovada. A validação estrutural atual com Redocly CLI 2.73.0 foi executada em 2026-11-20 e retornou 0 erros, 3 avisos e 0 ignorados. Os avisos de licença e servidores localhost permanecem documentados; esta validação não declara a consolidação integral aprovada. O estado geral da Etapa 9 continua aguardando aprovação. A Etapa 3 do Roadmap (Registros de decisões arquiteturais) e a Etapa 4 (Especificação funcional consolidada) permanecem não iniciadas.
 
 ## 4. Fase II — Preparação do ambiente
 

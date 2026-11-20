@@ -260,7 +260,14 @@ As atualizações deverão preservar as decisões anteriormente aprovadas.
 - `DEAD_LETTER` é mecanismo operacional de encaminhamento ou armazenamento de eventos com falha, não um estado alternativo do domínio.
 - Todas as operações sob `/admin/**` exigem usuário autenticado com perfil ADMIN, sessão administrativa com 2FA concluído e autorização validada pelo backend. Bearer representa autenticação e não substitui autorização por perfil.
 - `GET /admin/loans` exige ADMIN e 2FA, gera registro de auditoria e não exige reautenticação contextual.
-- A estrutura de campos dos itens do histórico `attempts` não está definida nos documentos aprovados; permanece genérica até existir referência aprovada.
+- A forma física de `outbox_event_attempts` não foi fixada no documento aprovado; seus atributos lógicos mínimos e política de reconciliação receberam adendo aprovado em 2026-11-20.
+
+### Adendo aprovado em 2026-11-20 — histórico e reconciliação da Outbox
+
+- Cada tentativa preserva logicamente: identificador UUID, referência ao evento, ciclo e número da tentativa, origem automática ou manual, resultado, horários relevantes e resumo do erro quando houver.
+- `outbox_events.attempt_count` é acumulado entre ciclos, atualizado atomicamente com o registro individual, desnormalizado e não autoritativo. O histórico de `outbox_event_attempts` é fonte autoritativa para reconstrução e reconciliação.
+- A reconciliação será periódica, somente leitura, gerará alerta quando encontrar divergência e não corrigirá dados automaticamente. A frequência deverá ser configurável; seu valor permanece pendente.
+- Nomes físicos finais, tipos, nulabilidade, constraints e índices continuam pendentes. Esta decisão não define SQL ou migração.
 
 Antes do encerramento da consolidação documental, deverão ser realizadas as seguintes verificações:
 

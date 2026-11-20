@@ -84,6 +84,11 @@ A arquitetura deverá garantir:
 | Eventos | Transactional Outbox |
 | Mensageria externa | Não utilizar na primeira versão |
 
+<aside class="definition-box" role="note" aria-label="Arquitetura aprovada">
+<strong>Definição.</strong>
+<p>O sistema é um monólito modular com Arquitetura Hexagonal. Os módulos compartilham a aplicação; não são microsserviços.</p>
+</aside>
+
 ## 1.3. Visão geral da arquitetura
 
 O frontend realiza requisições HTTP para a API REST.
@@ -526,6 +531,11 @@ flowchart TD
 - Eventos não deverão gerar movimentações financeiras duplicadas.
 - A Outbox deverá permitir rastreabilidade e recuperação de eventos.
 - `PROCESSED` registra processamento concluído com sucesso. `FAILED` é falha terminal elegível a reprocessamento manual, após validações e autorizações. `DEAD_LETTER` é mecanismo operacional de encaminhamento ou armazenamento, não estado alternativo do domínio.
+
+<aside class="warning-box" role="note" aria-label="Reprocessamento Outbox">
+<strong>Atenção.</strong>
+<p>O reprocessamento manual só é permitido para eventos elegíveis em <code>FAILED</code>, com as autorizações e controles aprovados. O armazenamento dead-letter não é um estado da máquina de domínio.</p>
+</aside>
 
 Não será introduzido broker externo na primeira versão.
 

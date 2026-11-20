@@ -1,5 +1,10 @@
 # MyBank — Especificação Frontend
 
+<aside class="danger-box" role="note" aria-label="Segurança de sessão no frontend">
+<strong>Regra de segurança.</strong>
+<p>O Access Token permanece em memória. Não armazenar tokens de autenticação em <code>localStorage</code> ou <code>sessionStorage</code>; o backend continua responsável por validar autenticação, autorização e titularidade.</p>
+</aside>
+
 | Campo | Valor |
 | --- | --- |
 | Identificador | MB-FE-001 |
