@@ -4,6 +4,11 @@
 
 > Aplicação educacional de banco digital fictício, desenvolvida como projeto de portfólio. O MyBank não movimenta dinheiro real, não realiza Pix, não acessa instituições financeiras e não processa pagamentos externos.
 
+<aside class="info-box" role="note" aria-label="Estado do projeto">
+<strong>Estado atual.</strong>
+<p>A Etapa 9 de consolidação documental foi aprovada e encerrada. A Etapa 10 começou com o diagnóstico do ambiente Fedora; nenhuma funcionalidade bancária foi implementada e nenhuma instalação ou alteração de ambiente foi executada.</p>
+</aside>
+
 ## Sumário
 
 - [Visão geral](#visao-geral)
@@ -27,12 +32,12 @@ Seu objetivo é demonstrar conhecimentos de engenharia de software, arquitetura,
 
 | Área | Estado atual |
 |---|---|
-| Especificações e decisões técnicas | Em consolidação documental. Consulte o [Roadmap](ROADMAP.md) e o [índice documental](docs/00-governanca/README.md). |
-| Organização dos documentos | Entregue como subentrega aceita para continuidade. A consolidação integral ainda aguarda aprovação. |
+| Especificações e decisões técnicas | Consolidação documental da Etapa 9 aprovada. Consulte o [Roadmap](ROADMAP.md) e o [índice documental](docs/00-governanca/README.md). |
+| Organização dos documentos | Consolidação integral da Etapa 9 aprovada em 2026-11-20; pendências técnicas futuras permanecem registradas. |
 | Funcionalidades | Especificadas; nenhuma funcionalidade está implementada. |
-| DER e dicionário de dados | Os documentos originais aprovados aguardam recuperação. A revisão existente não os substitui. |
-| OpenAPI | YAML 3.1.1 disponível; validação estrutural integral ainda pendente. |
-| Ambiente de desenvolvimento | Etapa ainda não iniciada. |
+| DER e dicionário de dados | A documentação lógica v1.1 está aprovada. Permanecem para etapas futuras o detalhamento físico de `outbox_event_attempts` e os detalhes operacionais da reconciliação; essas pendências não invalidam a aprovação lógica. |
+| OpenAPI | OpenAPI 3.1.1 validada com Redocly CLI 2.73.0 em 2026-11-20: 0 erros, 3 avisos e 0 ignorados. Os avisos são a licença não definida e os dois servidores localhost. |
+| Ambiente de desenvolvimento | Etapa 10 em diagnóstico inicial; instalações e alterações ainda aguardam autorização específica. |
 
 As funcionalidades descritas abaixo são escopo planejado, não recursos disponíveis em uma aplicação executável.
 
@@ -120,6 +125,8 @@ O escopo arquitetural tem complexidade elevada: reúne desafios de pleno avança
 O nível profissional efetivamente demonstrado dependerá da qualidade do código, testes, documentação, justificativas técnicas, segurança e capacidade de manutenção. Esta avaliação trata do escopo e dos critérios técnicos; não é certificação profissional.
 
 ## Documentação
+
+Os arquivos Markdown são a fonte de manutenção e consulta. As caixas HTML incorporadas usam classes semânticas e rótulos visíveis; sem um renderizador que carregue CSS compartilhado, não há cor ou estilo customizado garantido. Os documentos mantêm a leitura por títulos, listas, tabelas e texto Markdown como alternativa.
 
 - [Regras permanentes do projeto](AGENTS.md)
 - [Roadmap](ROADMAP.md)

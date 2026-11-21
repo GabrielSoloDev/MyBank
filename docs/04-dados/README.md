@@ -1,24 +1,18 @@
-# Modelo de dados — pendência documental
+# Modelo de dados — DER e Dicionário de Dados
 
 | Campo | Valor |
-| --- | --- |
+|---|---|
 | Identificador | MB-DATA-INDEX |
-| Estado editorial | Oficial como registro de pendência; modelo não consolidado. |
+| Estado editorial | Documentação lógica v1.1 aprovada; pendências físicas registradas para etapas futuras. |
 
-## Sumário
+## Documentos
 
-- [Documentos-base ausentes](#documentos-base-ausentes)
-- [Material disponível](#material-disponivel)
-- [Condição para conclusão](#condicao-para-conclusao)
+- [DER e Dicionário de Dados v1.1](der-e-dicionario-de-dados.md): modelo lógico aprovado; a estrutura física de `outbox_event_attempts` e os detalhes operacionais da reconciliação permanecem pendentes para etapas futuras.
+- [Revisão da modelagem e pendências](revisao-modelagem-e-pendencias.md): complemento proposto; somente regras posteriormente confirmadas são tratadas como aprovadas.
+- [Documento original de modelagem v1.0](../99-fontes-originais/MyBank%20—%20Documento%20de%20Modelagem%20do%20Banco%20de%20Dados.md): preservado intacto e identificado como proposta para revisão.
 
-## Documentos-base ausentes
+## Situação
 
-O DER e o dicionário de dados aprovados, versão 1.0, não foram localizados no repositório. São necessários para auditar os campos de CPF protegido, metadados de chaves, snapshot contratual e histórico da Outbox. Seus conteúdos não serão reconstruídos sem referência documental aprovada.
+O DER e o Dicionário de Dados v1.1 incorporam 38 entidades-base e quatro estruturas lógicas aprovadas. A documentação lógica está aprovada. A estrutura física de `outbox_event_attempts` e a forma/frequência operacional da reconciliação de `attempt_count` permanecem pendentes e não foram definidas nesta etapa.
 
-## Material disponível
-
-A [revisão da modelagem e pendências](revisao-modelagem-e-pendencias.md) é um complemento proposto, não substitui os documentos-base nem autoriza inventar atributos, tipos, índices ou relacionamentos.
-
-## Condição para conclusão
-
-Disponibilizar os documentos originais aprovados do DER e do dicionário de dados. A Etapa 9 não recebe aprovação final até a auditoria desses documentos.
+A aprovação da documentação lógica de dados não encerra a Etapa 9, não aprova integralmente a biblioteca documental e não autoriza SQL, migrations, implementação física ou desenvolvimento funcional.

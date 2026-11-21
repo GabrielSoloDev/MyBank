@@ -1,5 +1,10 @@
 # MyBank — Especificação Funcional Consolidada
 
+<aside class="danger-box" role="note" aria-label="Natureza da especificação">
+<strong>Escopo documental.</strong>
+<p>Este documento está identificado como proposta para aprovação. As regras formalmente aprovadas em ADRs e decisões complementares continuam obrigatórias; a presença aqui não transforma uma proposta em decisão.</p>
+</aside>
+
 | Campo | Valor |
 | --- | --- |
 | Identificador | MB-REQ-001 |

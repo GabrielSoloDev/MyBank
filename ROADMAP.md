@@ -36,6 +36,15 @@ Nenhuma etapa poderá começar sem autorização explícita do usuário.
 - NECESSITA AJUSTES
 - BLOQUEADA
 
+### 2.1. Interpretação dos estados e dos artefatos
+
+- **Documento produzido:** o arquivo existe; isso, por si só, não comprova revisão ou aprovação.
+- **Documento revisado:** seu conteúdo passou por revisão registrada; isso não aprova automaticamente decisões nem conclui uma etapa.
+- **Decisão aprovada:** existe aprovação explícita do usuário ou registro formal de aprovação aplicável, como o estado de uma ADR individual.
+- **Etapa formalmente concluída:** os critérios de aceite da etapa foram atendidos e a conclusão recebeu aprovação explícita do usuário.
+
+O estado de uma etapa registra sua execução formal no Roadmap e não é inferido pela existência de documentos ou decisões relacionados. Assim, uma etapa marcada como **NÃO INICIADA** significa que não há registro de início formal daquela etapa; não significa necessariamente que nenhum artefato relacionado exista. A existência desses artefatos também não autoriza alterar o estado para **APROVADA** ou **AGUARDANDO APROVAÇÃO** sem o registro correspondente.
+
 ## 3. Fase I — Planejamento e documentação
 
 ### Etapa 1 — Regras permanentes do projeto
@@ -125,7 +134,7 @@ Critérios de aceite:
 - Consistência financeira demonstrada nos diagramas.
 
 ### Etapa 6 — DER e dicionário de dados
-**Estado:** APROVADA EM CONVERSA
+**Estado:** APROVADA — documentação lógica v1.1
 
 Entregável:
 - Documento único contendo DER e dicionário de dados.
@@ -146,6 +155,8 @@ Critérios de aceite:
 - Regras financeiras preservadas.
 - Integridade referencial definida.
 - Compatibilidade com PostgreSQL e Flyway.
+
+A aprovação cobre o modelo lógico e a documentação v1.1. Permanecem para etapas futuras, sem autorização de implementação nesta aprovação, a estrutura física de `outbox_event_attempts` e os detalhes operacionais da reconciliação de `attempt_count`.
 
 ### Etapa 7 — Contratos da API
 **Estado:** NÃO INICIADA
@@ -186,7 +197,7 @@ Critérios de aceite:
 - Requisitos de auditoria definidos.
 
 ### Etapa 9 — Consolidação e revisão geral
-**Estado:** AGUARDANDO APROVAÇÃO
+**Estado:** APROVADA E ENCERRADA — aprovação formal do usuário registrada em 2026-11-20.
 
 Entregáveis:
 - Documentação consolidada.
@@ -195,7 +206,7 @@ Entregáveis:
 - Lista de pendências e riscos.
 - Versão de referência dos requisitos.
 - Relatório de auditoria documental cruzada.
-- Especificação OpenAPI YAML materializada; sintaxe YAML validada e validação estrutural por ferramenta compatível pendente.
+- Especificação OpenAPI YAML materializada; validação atual executada com Redocly CLI 2.73.0 em 2026-11-20: 0 erros, 3 avisos e 0 ignorados. Permanecem os avisos de licença não definida e URLs localhost; a contagem de 50 avisos é histórica e superada.
 
 Critérios de aceite:
 - Documentos sem contradições.
@@ -204,12 +215,18 @@ Critérios de aceite:
 - Pendências identificadas.
 - Aprovação geral do planejamento.
 
-A consolidação documental desta etapa aguarda aprovação explícita do usuário. A existência de documentos consolidados não autoriza a Etapa 10 nem implementação funcional. Pendências da auditoria estão registradas em `docs/09-auditoria/relatorio-de-consolidacao.md`.
+A consolidação documental da Etapa 9 foi aprovada formalmente pelo usuário em 2026-11-20 e está encerrada. As validações e limitações aceitas estão registradas em `docs/09-auditoria/relatorio-de-consolidacao.md`. A aprovação autoriza o início da Etapa 10, sem autorizar implementação funcional.
+
+A documentação lógica do DER e do Dicionário de Dados v1.1 permanece aprovada. Foram definidos os atributos lógicos mínimos de `outbox_event_attempts` e a reconciliação periódica somente leitura, com alerta e sem correção automática. Nomes/tipos/constraints/índices físicos e a frequência concreta configurável permanecem como decisões futuras; não foram implementados nesta etapa.
+
+A subetapa documental 2.1 — complementação das respostas HTTP `401` e revisão dos componentes OpenAPI — foi aprovada pelo usuário em 2026-11-18. A validação atual com Redocly CLI 2.73.0, executada em 2026-11-20, retornou 0 erros, 3 avisos e 0 ignorados. A Etapa 3 do Roadmap (Registros de decisões arquiteturais) permanece não iniciada.
+
+A subetapa documental 3 — revisão dos avisos restantes da OpenAPI — foi aprovada pelo usuário em 2026-11-19. A aprovação abrangeu as descrições das 15 tags, a simplificação do `allOf` e a remoção de `info.license`, pois não há licença formal aprovada. A validação estrutural atual com Redocly CLI 2.73.0 foi executada em 2026-11-20 e retornou 0 erros, 3 avisos e 0 ignorados. Os avisos de licença e servidores localhost permanecem documentados. A aprovação integral da Etapa 9 foi registrada em 2026-11-20. A Etapa 3 do Roadmap (Registros de decisões arquiteturais) e a Etapa 4 (Especificação funcional consolidada) permanecem não iniciadas.
 
 ## 4. Fase II — Preparação do ambiente
 
 ### Etapa 10 — Validação de ferramentas e ambiente
-**Estado:** NÃO INICIADA
+**Estado:** EM ANDAMENTO — diagnóstico inicial autorizado e realizado em 2026-11-20. Nenhuma instalação ou alteração do ambiente foi autorizada ou executada.
 
 Escopo:
 - JDK 25 LTS.
@@ -233,6 +250,8 @@ Critérios de aceite:
 - Ambiente reproduzível.
 
 Não iniciar funcionalidades antes da validação e aprovação desta etapa.
+
+Registro do diagnóstico inicial: Fedora Linux 45; JDK 25.0.4.1 e Maven 3.9.11 disponíveis, mas `JAVA_HOME` aponta para um diretório Java 21 incompatível com o JDK ativo; Maven funciona quando executado com `JAVA_HOME` apontando para o JDK 25. Docker Engine 29.5.3 e Compose v5.1.4 estão instalados e o serviço Docker consta ativo, mas o acesso ao socket permanece negado por permissões. Node.js 22.23.1 (linha LTS em 2026-11-20) e npm 10.9.8 estão disponíveis; PostgreSQL 18.3 está instalado e o servidor aceita conexões, mas não existe role PostgreSQL com o nome do usuário atual. O CLI `devcontainer` e os manifests do projeto (`pom.xml`, `mvnw`, `package.json`, `package-lock.json`, `.nvmrc`, `.env.example`, Compose e configuração Dev Container) não foram encontrados; a extensão Remote Containers do VS Code está instalada. Detalhes e limites da verificação estão no relatório da etapa.
 
 ## 5. Fase III — Estrutura inicial do projeto
 

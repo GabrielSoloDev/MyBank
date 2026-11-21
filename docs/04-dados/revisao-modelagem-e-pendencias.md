@@ -11,26 +11,26 @@
 - [Complemento técnico à versão 1.0 do DER e Dicionário de Dados](#complemento-tecnico-a-versao-10-do-der-e-dicionario-de-dados)
 - [1. Separação entre usuário, cliente e conta](#1-separacao-entre-usuario-cliente-e-conta)
 - [1.1. Separação dos estados](#11-separacao-dos-estados)
-- [1.2. Alteração em `customer_profiles`](#12-alteracao-em-customerprofiles)
-- [1.3. Nova tabela `customer_status_history`](#13-nova-tabela-customerstatushistory)
-- [1.4. Nova tabela `bank_account_status_history`](#14-nova-tabela-bankaccountstatushistory)
+- [1.2. Alteração em `customer_profiles`](#12-alteracao-em-customer_profiles)
+- [1.3. Nova tabela `customer_status_history`](#13-nova-tabela-customer_status_history)
+- [1.4. Nova tabela `bank_account_status_history`](#14-nova-tabela-bank_account_status_history)
 - [1.5. Transições de clientes](#15-transicoes-de-clientes)
 - [1.6. Transições de contas](#16-transicoes-de-contas)
 - [2. Estornos administrativos](#2-estornos-administrativos)
 - [2.1. Política da primeira versão](#21-politica-da-primeira-versao)
-- [2.2. Alteração em `transaction_reversals`](#22-alteracao-em-transactionreversals)
+- [2.2. Alteração em `transaction_reversals`](#22-alteracao-em-transaction_reversals)
 - [2.3. Regras de elegibilidade](#23-regras-de-elegibilidade)
 - [2.4. Limites administrativos](#24-limites-administrativos)
 - [3. Pagamento de empréstimos após encerramento de conta](#3-pagamento-de-emprestimos-apos-encerramento-de-conta)
 - [3.1. Regra arquitetural](#31-regra-arquitetural)
-- [3.2. Nova tabela `loan_installment_payments`](#32-nova-tabela-loaninstallmentpayments)
+- [3.2. Nova tabela `loan_installment_payments`](#32-nova-tabela-loan_installment_payments)
 - [3.3. Regras de pagamento](#33-regras-de-pagamento)
 - [3.4. Contabilização](#34-contabilizacao)
 - [4. Transactional Outbox — Falhas e reprocessamento](#4-transactional-outbox-falhas-e-reprocessamento)
-- [4.1. Estados revisados de `outbox_events`](#41-estados-revisados-de-outboxevents)
-- [4.2. Estrutura revisada de `outbox_events`](#42-estrutura-revisada-de-outboxevents)
+- [4.1. Estados revisados de `outbox_events`](#41-estados-revisados-de-outbox_events)
+- [4.2. Estrutura revisada de `outbox_events`](#42-estrutura-revisada-de-outbox_events)
 - [4.3. Política de tentativas](#43-politica-de-tentativas)
-- [4.4. Nova tabela `outbox_event_attempts`](#44-nova-tabela-outboxeventattempts)
+- [4.4. Nova tabela `outbox_event_attempts`](#44-nova-tabela-outbox_event_attempts)
 - [4.5. Recuperação de processamento interrompido](#45-recuperacao-de-processamento-interrompido)
 - [4.6. Reprocessamento administrativo](#46-reprocessamento-administrativo)
 - [5. Ajustes complementares ao DER](#5-ajustes-complementares-ao-der)
@@ -50,6 +50,11 @@
 **Versão:** 1.1 — Proposta de revisão
 **Banco de dados:** PostgreSQL
 **Referência:** Documento de Modelagem do Banco de Dados — versão 1.0
+
+<aside class="warning-box" role="note" aria-label="Autoridade da revisão">
+<strong>Proposta histórica, não normativa.</strong>
+<p>Este documento não substitui o <a href="der-e-dicionario-de-dados.md">DER e Dicionário de Dados v1.1 aprovado</a>. Propostas anteriores de campos, limite de cinco tentativas, dados de worker/lease, <code>reprocess_count</code> e reinício de <code>attempt_count</code> não foram aprovadas como regras. Consulte a seção 4.12.3 do modelo vigente para os requisitos aceitos.</p>
+</aside>
 
 Este documento complementa a versão 1.0. Todas as entidades, campos e regras não mencionados aqui permanecem conforme a versão original. As alterações abaixo devem ser incorporadas ao DER e ao dicionário de dados antes da aprovação definitiva da modelagem.
 

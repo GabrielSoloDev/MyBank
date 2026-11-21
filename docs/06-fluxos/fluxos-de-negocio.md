@@ -746,6 +746,11 @@ A operação financeira não depende da entrega da notificação.
 
 `PROCESSED` indica conclusão bem-sucedida; `FAILED` é o estado terminal de falha elegível a reprocessamento manual após validações e autorizações. `DEAD_LETTER` é mecanismo operacional de encaminhamento ou armazenamento e não um estado alternativo do domínio.
 
+<aside class="example-box" role="note" aria-label="Exemplo de estados da Outbox">
+<strong>Exemplo.</strong>
+<p>Um evento termina em <code>FAILED</code> após esgotar tentativas automáticas. Se permanecer elegível, um ADMIN autorizado pode solicitar reprocessamento; o histórico anterior é mantido e o encaminhamento dead-letter não altera o estado do evento.</p>
+</aside>
+
 ## 10.3 Regras
 
 - Eventos possuem identificador único.
