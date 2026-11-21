@@ -197,7 +197,7 @@ Critérios de aceite:
 - Requisitos de auditoria definidos.
 
 ### Etapa 9 — Consolidação e revisão geral
-**Estado:** AGUARDANDO APROVAÇÃO
+**Estado:** APROVADA E ENCERRADA — aprovação formal do usuário registrada em 2026-11-20.
 
 Entregáveis:
 - Documentação consolidada.
@@ -215,18 +215,18 @@ Critérios de aceite:
 - Pendências identificadas.
 - Aprovação geral do planejamento.
 
-A consolidação documental desta etapa aguarda aprovação explícita do usuário. A existência de documentos consolidados não autoriza a Etapa 10 nem implementação funcional. Pendências da auditoria estão registradas em `docs/09-auditoria/relatorio-de-consolidacao.md`.
+A consolidação documental da Etapa 9 foi aprovada formalmente pelo usuário em 2026-11-20 e está encerrada. As validações e limitações aceitas estão registradas em `docs/09-auditoria/relatorio-de-consolidacao.md`. A aprovação autoriza o início da Etapa 10, sem autorizar implementação funcional.
 
-A documentação lógica do DER e do Dicionário de Dados v1.1 foi aprovada. Nesta revisão, foram definidos os atributos lógicos mínimos de `outbox_event_attempts` e a reconciliação periódica somente leitura, com alerta e sem correção automática. Nomes/tipos/constraints/índices físicos e a frequência concreta configurável permanecem para etapas futuras. Essa atualização não altera o estado geral da Etapa 9, que continua aguardando aprovação, nem autoriza a Etapa 10.
+A documentação lógica do DER e do Dicionário de Dados v1.1 permanece aprovada. Foram definidos os atributos lógicos mínimos de `outbox_event_attempts` e a reconciliação periódica somente leitura, com alerta e sem correção automática. Nomes/tipos/constraints/índices físicos e a frequência concreta configurável permanecem como decisões futuras; não foram implementados nesta etapa.
 
-A subetapa documental 2.1 — complementação das respostas HTTP `401` e revisão dos componentes OpenAPI — foi aprovada pelo usuário em 2026-11-18. A aprovação limita-se ao escopo dessa subetapa. A validação atual com Redocly CLI 2.73.0, executada em 2026-11-20, retornou 0 erros, 3 avisos e 0 ignorados; isso não equivale à aprovação integral da Etapa 9. A Etapa 3 do Roadmap (Registros de decisões arquiteturais) permanece não iniciada.
+A subetapa documental 2.1 — complementação das respostas HTTP `401` e revisão dos componentes OpenAPI — foi aprovada pelo usuário em 2026-11-18. A validação atual com Redocly CLI 2.73.0, executada em 2026-11-20, retornou 0 erros, 3 avisos e 0 ignorados. A Etapa 3 do Roadmap (Registros de decisões arquiteturais) permanece não iniciada.
 
-A subetapa documental 3 — revisão dos avisos restantes da OpenAPI — foi aprovada pelo usuário em 2026-11-19. A aprovação abrangeu as descrições das 15 tags, a simplificação do `allOf` e a remoção de `info.license`, pois não há licença formal aprovada. A validação estrutural atual com Redocly CLI 2.73.0 foi executada em 2026-11-20 e retornou 0 erros, 3 avisos e 0 ignorados. Os avisos de licença e servidores localhost permanecem documentados; esta validação não declara a consolidação integral aprovada. O estado geral da Etapa 9 continua aguardando aprovação. A Etapa 3 do Roadmap (Registros de decisões arquiteturais) e a Etapa 4 (Especificação funcional consolidada) permanecem não iniciadas.
+A subetapa documental 3 — revisão dos avisos restantes da OpenAPI — foi aprovada pelo usuário em 2026-11-19. A aprovação abrangeu as descrições das 15 tags, a simplificação do `allOf` e a remoção de `info.license`, pois não há licença formal aprovada. A validação estrutural atual com Redocly CLI 2.73.0 foi executada em 2026-11-20 e retornou 0 erros, 3 avisos e 0 ignorados. Os avisos de licença e servidores localhost permanecem documentados. A aprovação integral da Etapa 9 foi registrada em 2026-11-20. A Etapa 3 do Roadmap (Registros de decisões arquiteturais) e a Etapa 4 (Especificação funcional consolidada) permanecem não iniciadas.
 
 ## 4. Fase II — Preparação do ambiente
 
 ### Etapa 10 — Validação de ferramentas e ambiente
-**Estado:** NÃO INICIADA
+**Estado:** EM ANDAMENTO — diagnóstico inicial autorizado e realizado em 2026-11-20. Nenhuma instalação ou alteração do ambiente foi autorizada ou executada.
 
 Escopo:
 - JDK 25 LTS.
@@ -250,6 +250,8 @@ Critérios de aceite:
 - Ambiente reproduzível.
 
 Não iniciar funcionalidades antes da validação e aprovação desta etapa.
+
+Registro do diagnóstico inicial: Fedora Linux 45; JDK 25.0.4.1 e Maven 3.9.11 disponíveis, mas `JAVA_HOME` aponta para um diretório Java 21 incompatível com o JDK ativo; Maven funciona quando executado com `JAVA_HOME` apontando para o JDK 25. Docker Engine 29.5.3 e Compose v5.1.4 estão instalados e o serviço Docker consta ativo, mas o acesso ao socket permanece negado por permissões. Node.js 22.23.1 (linha LTS em 2026-11-20) e npm 10.9.8 estão disponíveis; PostgreSQL 18.3 está instalado e o servidor aceita conexões, mas não existe role PostgreSQL com o nome do usuário atual. O CLI `devcontainer` e os manifests do projeto (`pom.xml`, `mvnw`, `package.json`, `package-lock.json`, `.nvmrc`, `.env.example`, Compose e configuração Dev Container) não foram encontrados; a extensão Remote Containers do VS Code está instalada. Detalhes e limites da verificação estão no relatório da etapa.
 
 ## 5. Fase III — Estrutura inicial do projeto
 

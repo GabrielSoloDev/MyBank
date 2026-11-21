@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | Identificador | MB-DOC-INDEX |
-| Estado | Biblioteca documental oficial; revisão integral da Etapa 9 ainda aguarda aprovação humana. |
+| Estado | Biblioteca documental oficial; Etapa 9 aprovada e encerrada em 2026-11-20; Etapa 10 em diagnóstico inicial. |
 
 ## Sumário
 
@@ -43,7 +43,7 @@ Não há renderizador local oficial nem mecanismo compartilhado de carregamento 
 | ID | Caminho oficial | Escopo | Estado do conteúdo |
 |---|---|---|---|
 | MB-GOV-AGENTS | [`../../AGENTS.md`](../../AGENTS.md) | Regras permanentes de trabalho e governança | Documento oficial de governança do projeto. |
-| MB-GOV-ROADMAP | [`../../ROADMAP.md`](../../ROADMAP.md) | Fases, etapas, dependências e critérios de aceite | Documento oficial de planejamento; cada etapa mantém seu estado formal próprio. |
+| MB-GOV-ROADMAP | [`../../ROADMAP.md`](../../ROADMAP.md) | Fases, etapas, dependências e critérios de aceite | Etapa 9 aprovada e encerrada; Etapa 10 em andamento no diagnóstico do ambiente. |
 | MB-ADR | [`01-decisoes/adr.md`](../01-decisoes/adr.md) | Decisões arquiteturais | Catálogo com status geral proposto; ADRs individuais indicam estados próprios. |
 | MB-DEC | [`01-decisoes/decisoes-tecnicas-complementares.md`](../01-decisoes/decisoes-tecnicas-complementares.md) | Decisões técnicas complementares | Decisões aprovadas, v1.1. |
 | MB-REQ | [`02-requisitos/especificacao-funcional.md`](../02-requisitos/especificacao-funcional.md) | Requisitos funcionais e não funcionais | Proposta para aprovação. |
@@ -56,7 +56,7 @@ Não há renderizador local oficial nem mecanismo compartilhado de carregamento 
 | MB-FLOW | [`06-fluxos/fluxos-de-negocio.md`](../06-fluxos/fluxos-de-negocio.md) | Fluxos de negócio | Proposta para revisão. |
 | MB-FE | [`07-frontend/especificacao-frontend.md`](../07-frontend/especificacao-frontend.md) | Especificação do frontend | Referência para desenvolvimento; decisões preservadas. |
 | MB-OPS | [`08-operacao/parametros-operacionais.md`](../08-operacao/parametros-operacionais.md) | Parâmetros e regras operacionais | Proposta para aprovação. |
-| MB-AUDIT | [`09-auditoria/relatorio-de-consolidacao.md`](../09-auditoria/relatorio-de-consolidacao.md) | Inventário, auditoria e validações | Relatório de trabalho; consolidação aguardando aprovação. |
+| MB-AUDIT | [`09-auditoria/relatorio-de-consolidacao.md`](../09-auditoria/relatorio-de-consolidacao.md) | Inventário, auditoria e validações | Relatório final da consolidação aprovada na Etapa 9; pendências futuras permanecem registradas. |
 
 ## Fontes preservadas
 
@@ -66,5 +66,5 @@ Os documentos originais foram movidos, sem alteração de conteúdo, para [`99-f
 
 - Manter para etapas futuras os detalhes físicos de `outbox_event_attempts` e o valor concreto da frequência configurável de reconciliação de `attempt_count`; essas pendências não reabrem a aprovação lógica v1.1.
 - A validação atual Redocly retornou 0 erros, 3 avisos e 0 ignorados; licença e endereços oficiais de produção não foram definidos. O resultado histórico de 50 avisos foi superado e está identificado como histórico no relatório.
-- Revisar o relatório completo e aprovar a biblioteca documental.
-- A Etapa 9 permanece aguardando aprovação; a Etapa 10 e a implementação funcional não estão autorizadas por esta organização documental.
+- A Etapa 9 foi aprovada e encerrada em 2026-11-20. Pendências técnicas da Outbox, licença formal e domínio de produção permanecem registradas para decisão futura.
+- A Etapa 10 está autorizada e em andamento somente para diagnóstico do ambiente. Instalações, alterações no sistema e implementação funcional não estão autorizadas por esse início.

@@ -132,7 +132,7 @@ A biblioteca oficial usa um único índice para declarar fonte normativa por ass
 - A frequência concreta e configuração da reconciliação permanecem pendentes; o método já foi definido como periódico, somente leitura, com alerta e sem correção automática.
 - A validação Redocly atual retornou 0 erros e 3 avisos; ver seção 9. Licença formal e URL de produção continuam sem decisão.
 - A verificação de links e âncoras desta revisão está concluída e resumida na seção 9.
-- Manter a Etapa 9 aguardando aprovação humana. A Etapa 10 e a implementação funcional não foram iniciadas.
+- A Etapa 9 foi aprovada formalmente pelo usuário em 2026-11-20. A Etapa 10 iniciou somente com diagnóstico do ambiente; implementação funcional não iniciada.
 
 ## 9. Atualização da auditoria — 2026-11-20
 
@@ -141,7 +141,7 @@ A biblioteca oficial usa um único índice para declarar fonte normativa por ass
 | Documento | Versão ou estado | Aprovação e autoridade | Pendências |
 |---|---|---|---|
 | `AGENTS.md` | Governança oficial, sem versão indicada | Documento permanente vigente | Nenhuma alteração nesta atualização. |
-| `ROADMAP.md` | Planejamento oficial | Etapa 9 aguarda aprovação; Etapa 10 não iniciada | Gate documental e itens abaixo. |
+| `ROADMAP.md` | Planejamento oficial | Etapa 9 aprovada e encerrada; Etapa 10 em diagnóstico inicial | Itens técnicos futuros e validações do ambiente. |
 | `docs/00-governanca/README.md` | Índice oficial | Declara a fonte normativa e situação editorial | Não implica aprovação automática dos documentos propostos. |
 | `docs/01-decisoes/adr.md` | Catálogo geral proposto; ADRs individuais com estados próprios | ADRs `ACEITO` são decisões formalizadas | O status geral do catálogo continua proposto. |
 | `docs/01-decisoes/decisoes-tecnicas-complementares.md` | v1.1 | Decisões complementares aprovadas | Valores numéricos não definidos permanecem pendentes. |
@@ -199,12 +199,12 @@ A biblioteca oficial usa um único índice para declarar fonte normativa por ass
 | Auditoria cruzada e links internos | Atendido nos documentos oficiais revisados | Sem caminho ou âncora ausente; históricos preservados. |
 | Apresentação HTML semântica em Markdown | Atendido parcialmente | Caixas com rótulos; sem CSS externo por falta de mecanismo definido. GitHub não foi testado. |
 | Validação Mermaid nesta revisão | Não repetida | Diagramas não foram alterados; validação/renderização anterior dos 11 diagramas do DER permanece aprovada. |
-| Encerramento da Etapa 9 | Pendente | Aguardar revisão e aprovação humana; Etapa 10 não iniciada. |
+| Encerramento da Etapa 9 | Aprovado | Aprovação formal registrada pelo usuário em 2026-11-20; Etapa 10 autorizada para início. |
 
 ### Pendências e gate
 
 - Detalhes físicos de `outbox_event_attempts` e valores concretos/configuração operacional da frequência de reconciliação.
 - Licença formal e endereço oficial de produção.
 - Limite numérico de tentativas, backoff e demais valores operacionais não decididos.
-- Aprovação integral das especificações em estado de proposta e do relatório da Etapa 9.
-- A Etapa 10 permanece não iniciada; não houve SQL, migration, implementação funcional, publicação externa ou alteração dos arquivos históricos.
+- As pendências técnicas registradas permanecem para etapas futuras; a aprovação da Etapa 9 não converte propostas internas em decisões aprovadas.
+- A Etapa 10 iniciou com diagnóstico somente de leitura em 2026-11-20; não houve instalação, alteração do sistema, SQL, migration, implementação funcional, publicação externa ou alteração dos arquivos históricos.
